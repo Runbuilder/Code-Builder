@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DALLE-ART</title>
+  <!-- sweetalert2 추가 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
+  <link rel="icon" href="pen.png">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.all.min.js"></script>
+  <!-- 부트스트랩 CSS 링크 추가 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header style="color:white">
+    <h1 style="text-align: center;margin: 20px;font-weight: 900;">
+      🚀RUN<span class="txtBox">BUILDER</span>
+    </h1>
+  </header>
+
+  <main>
+    <div style="text-align:center;padding: 15px;">
+      <h2 style="font-weight: 900;">What will you make?</h2>
+      <!-- 디자인파일추가 -->
+      <div class="input-container">
+        <input type="file" id="imageInput" accept="image/*" onchange="handleFileSelect(event)">
+      </div>
+
+
+      <textarea id="request"" style=" min-height: 200px">1.제목 : 
+2.기능 : </textarea>
+      <button class="btn btn-danger btn1" id="btn1" onclick="getCode()" style="width: 100%;margin: 0;">
+        <span style="font-weight: 900;font-size: 20px;color: white;">💡GET CODE</span>
+      </button>
+
+      <!-- 로딩 -->
+      <div id="loading" class="hidden flex justify-center items-center">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p>LOADING...</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding: 15px;">
+      <textarea id="response" placeholder="가져온 코드"></textarea>
+      <button class="btn btn-danger" onclick="runCode()" style="width: 100%;margin: 0;">
+
+        <span style="font-weight: 900;font-size: 20px;color: white;">✨RUN BUILD</span>
+      </button>
+    </div>
+  </main>
+
+  <span class="footer">
+    2023 © Build by🦾<a href="https://www.youtube.com/channel/UCLP2jMz-MpVgsGizdjfQDZA" target="_blank"
+      style="font-weight: 900;">RunBuilder</a>
+  </span>
+
+  <script src="script.js">
+
+  </script>
+</body>
+
+</html>
