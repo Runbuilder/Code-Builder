@@ -17,22 +17,23 @@
 </head>
 
 <body>
-  <header style="color:white">
-    <h1 style="text-align: center;margin: 20px;font-weight: 900;">
-      🚀RUN<span class="txtBox">BUILDER</span>
+  <header style="color:white;padding: 15px;">
+    <h1 style="text-align: center;margin: 10px;font-weight: 900;">
+      RUN<span class="txtBox">BUILDER</span>
     </h1>
   </header>
 
   <main>
     <div style="text-align:center;padding: 15px;">
-      <h2 style="font-weight: 900;">What will you make?</h2>
+      <h2 style="font-weight: 900;">🚀What will you make?</h2>
       <!-- 디자인파일추가 -->
-      <div class="input-container">
+      <div style="text-align: left;padding: 15px 0;">
+        😁앱 디자인
         <input type="file" id="imageInput" accept="image/*" onchange="handleFileSelect(event)">
       </div>
 
-
-      <textarea id="request"" style=" min-height: 200px">1.제목 : 
+      <div style="text-align: left;padding-top: 10px;"> 😀앱 설명</div>
+      <textarea id="request" style=" min-height: 150px">1.제목 : 
 2.기능 : </textarea>
       <button class="btn btn-danger btn1" id="btn1" onclick="getCode()" style="width: 100%;margin: 0;">
         <span style="font-weight: 900;font-size: 20px;color: white;">💡GET CODE</span>
@@ -45,7 +46,8 @@
       </div>
     </div>
 
-    <div style="text-align:center;padding: 15px;">
+    <div style="text-align:left;padding: 10px;">
+      😍앱 코드
       <textarea id="response" placeholder="가져온 코드"></textarea>
       <button class="btn btn-danger" onclick="runCode()" style="width: 100%;margin: 0;">
 
@@ -54,10 +56,10 @@
     </div>
   </main>
 
-  <span class="footer">
+  <footer>
     2023 © Build by🦾<a href="https://www.youtube.com/channel/UCLP2jMz-MpVgsGizdjfQDZA" target="_blank"
       style="font-weight: 900;">RunBuilder</a>
-  </span>
+  </footer>
 
   <script src="script.js">
 
