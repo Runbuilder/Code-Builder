@@ -9,7 +9,7 @@ body {
 
 header {
   color: #fff;
-  background-image: url("/bg.jfif");
+  background-image: url("bg.jfif");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
