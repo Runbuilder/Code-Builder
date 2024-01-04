@@ -10,7 +10,6 @@ body {
 header {
   background: #101010;
   color: #fff;
-  padding: 1rem 0;
 }
 
 .txtBox {
@@ -20,9 +19,6 @@ header {
   padding: 0 8px;
 }
 
-input[type="file"] {
-  margin: 0.5rem 0;
-}
 
 input {
   color: white;
@@ -34,17 +30,20 @@ input {
 }
 
 textarea {
-  margin: 0.5rem 0;
   padding: 0.5rem;
   border: 1px solid #797777;
   border-radius: 5px;
   width: 100%;
-  min-height: 250px;
+  min-height: 200px;
+}
+
+footer {
+  padding: 20px;
 }
 
 .btn {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   border-radius: 5px;
   text-align: center;
   font-size: 1.25rem;
