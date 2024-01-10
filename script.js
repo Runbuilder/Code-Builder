@@ -3,15 +3,15 @@ function getCode() {
   let responseElement = document.getElementById('response');
 
   const imageInput = document.getElementById('imageInput');
-  if (imageInput.files.length === 0) {
-    Swal.fire({
-      title: '경고',
-      text: '디자인 이미지를 업로드 해주세요.',
-      icon: 'warning',
-      confirmButtonText: '확인'
-    });
-    return;
-  }
+  // if (imageInput.files.length === 0) {
+  //   Swal.fire({
+  //     title: '경고',
+  //     text: '디자인 이미지를 업로드 해주세요.',
+  //     icon: 'warning',
+  //     confirmButtonText: '확인'
+  //   });
+  //   return;
+  // }
 
   if (questCode.length <= 10) {
     Swal.fire({
