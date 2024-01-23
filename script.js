@@ -60,6 +60,15 @@ function getCode() {
 function runCode() {
 
   var code = document.getElementById("response").value;
+  const regex = /^```([\s\S]*)```$/;
+  const matches = code.match(regex);
+if (matches && matches.length >= 2) {
+  const strippedCode = matches[1];
+  console.log(strippedCode);
+} else {
+  console.log("정규표현식과 일치하는 코드 블록을 찾을 수 없습니다.");
+}
+   
   if (code.length === 0) {
     Swal.fire({
       title: '경고',
