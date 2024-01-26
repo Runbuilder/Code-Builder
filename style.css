@@ -1,86 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
 body {
-  font-family: 'Arial', sans-serif;
-  background: #f4f4f4;
+  background-color: #10291a;
+
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+main {
+  overflow-y: auto;
+}
+
+body,
+html {
   margin: 0;
   padding: 0;
-  text-align: center;
-
+  width: 100%;
+  height: 100%;
 }
 
 header {
-  color: #fff;
-/*   background-image: url("bg.jfif");
-  background-position: center;
+  /* position: fixed; */
+  width: 100%;
+  z-index: 1000;
+  /* background-color: #040a22; */
+
+  background-image: url('bg.png');
+  background-position: top;
   background-repeat: no-repeat;
-  background-size: cover; */
-  background: #101010;
+  background-size: cover;
+  margin: auto;
+}
+
+.theme-toggle {
+  position: fixed;
+  right: 10px;
+  top: 0;
+  z-index: 1000;
+  padding: 10px;
+}
+
+textarea {
+  height: 5em;
+  width: 100%;
+}
+
+main {
+  /* 헤더 높이만큼 상단 마진 추가 */
+  padding-top: 20px;
+  /* 내용과 헤더 사이의 여백 */
+  /* 필요에 따라 추가적인 스타일링 */
+}
+
+.btnCopy,
+.btnCopy2 {
+  margin-top: [헤더의 높이];
+  /* 버튼 위치 조정 */
+}
+
+/* 기존 CSS 스타일 */
+
+
+
+
+.card {
+  border: 1px solid #ccc;
+  margin: 10px;
+  width: 150px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  padding: 5px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.divWrap {
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.div0 {
+  font-weight: 900;
+  font-size: 24px;
+}
+
+.container {
+  padding: 0;
+}
+
+.container>div {
+  width: 100%;
+  padding: 5px;
+}
+
+.container input {
+  width: 90%;
+  /* 부트스트랩 클래스 추가: 입력 필드 스타일 변경 */
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.mainBtn {
+  width: 70%;
+  color: white;
+}
+
+.sheetBtn {
+  margin: 3px;
+  color: white;
+}
+
+.cardBtn {
+  margin: 0 5px;
+  width: 100%;
+}
+
+input {
+  margin-bottom: 5px;
+}
+
+.btn {
+  color: white;
+}
+
+.btn2 {
+  margin: 5px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 15px;
+  background-color: rgba(255, 255, 255, 0.5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background-size: cover;
+  background-position: center;
+  transition: 0.3s ease;
+  background-repeat: no-repeat;
+  position: relative;
+  border-radius: 10px;
+}
+
+.btn2:hover {
+  background-color: #fcd53f;
+  color: white;
+}
+
+.btn2::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  border-radius: 10px;
+}
+
+.btn2:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 1;
+  border-radius: 10px;
+}
+
+.popupTitle {
+  color: white;
+  font-weight: 900;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+}
+
+.btnCopy {
+  height: 40px;
+  padding: 5px;
+  width: 100%;
+  color: white;
+  border-radius: 5px 0 0 0;
+}
+
+.btnCopy2 {
+  height: 40px;
+  padding: 0 10px;
+  font-weight: 900;
+  font-size: 18px;
+  width: 100%;
+  border-radius: 0 5px 0 0;
+}
+
+.btnBuild {
+  height: 40px;
+  padding: 0 10px;
+  font-weight: 900;
+  font-size: 18px;
+  width: 100%;
+  border-radius: 5px ;
 }
 
 .txtBox {
   background-color: #f92f60;
+  padding: 0 8px;
   border-radius: 5px;
   color: #040a22;
-  padding: 0 8px;
-}
-
-
-input {
-  color: white;
-  background: #797777;
-  border: solid 1px;
-  padding: 5px;
-  border-radius: 5px;
-  width: 100%;
-}
-
-textarea {
-  padding: 0.5rem;
-  border: 1px solid #797777;
-  border-radius: 5px;
-  width: 100%;
-  min-height: 200px;
-}
-
-footer {
-  padding: 20px;
-}
-
-.btn {
-  display: inline-block;
-  padding: 0.5rem 1.5rem;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 1.25rem;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.btn-danger {
-  background: #f92f60;
-  color: #fff;
-}
-
-.btn-danger:hover {
-  background: #f92f60;
-}
-
-.footer {
-  padding: 10px;
-}
-
-.hidden {
-  display: none;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .btn {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* textarea {
-    width: calc(100% - 1rem);
-    box-sizing: border-box;
-  } */
 }
