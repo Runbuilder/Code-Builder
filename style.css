@@ -15,6 +15,7 @@ body {
 
 main {
   overflow-y: auto;
+  padding-top: 20px;
 }
 
 body,
@@ -51,12 +52,6 @@ textarea {
   width: 100%;
 }
 
-main {
-  /* 헤더 높이만큼 상단 마진 추가 */
-  padding-top: 20px;
-  /* 내용과 헤더 사이의 여백 */
-  /* 필요에 따라 추가적인 스타일링 */
-}
 
 .btnCopy,
 .btnCopy2 {
@@ -213,7 +208,7 @@ input {
   font-weight: 900;
   font-size: 18px;
   width: 100%;
-  border-radius: 5px ;
+  border-radius: 5px;
 }
 
 .txtBox {
