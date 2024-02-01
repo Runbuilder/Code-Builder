@@ -85,8 +85,8 @@ function dataShow(dataArray, scriptURL, sheetIndex) {
   dataArray.forEach((item) => {
     const button = document.createElement('button');
     // button.style.backgroundImage = `url('${item[2]}')`;
-    button.style.width = '160px';
-    button.style.height = '60px';
+    // button.style.width = '160px';
+    // button.style.height = '60px';
 
     const span = document.createElement('span');
     span.innerHTML = `${item[1].toString()}`;
@@ -201,6 +201,7 @@ async function getCode() {
     //버튼표시
     const btnDiv = document.createElement('div');
     btnDiv.style.display = 'flex';
+    
     const pwa = document.createElement('button');
     pwa.textContent = '📱Make PWA';
     pwa.classList.add('btn-primary');
@@ -236,9 +237,10 @@ async function getCode() {
     editorElement.style.height = '400px';
 
     //컨테이너에 편집기와 버튼 추가
-    btnDiv.appendChild(pwa);
+    // btnDiv.appendChild(pwa);
     btnDiv.appendChild(button);
     btnDiv2.appendChild(htmlCode);
+    btnDiv2.appendChild(pwa);
     btnDiv2.appendChild(manifest);
     btnDiv2.appendChild(serviceWorkers);
     btnDiv2.appendChild(save);
@@ -271,7 +273,7 @@ async function getCode() {
       xhr.open('GET', file, true);
       xhr.send();
     });
-    serviceWorkers.addEventListener('click', () => { 
+    serviceWorkers.addEventListener('click', () => {
       const file = 'serviceWorker.js'; // 가져올 파일의 이름
       const xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
