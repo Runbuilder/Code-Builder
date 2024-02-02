@@ -152,8 +152,7 @@ input {
 .btn2:hover {
   background-color: #fcd53f;
   color: white;
-}
-
+} 
 .btn2::after {
   content: '';
   position: absolute;
@@ -216,4 +215,17 @@ input {
   padding: 0 8px;
   border-radius: 5px;
   color: #040a22;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #a3a3a3;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #a3a3a3;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #a3a3a3;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #a3a3a3;
 }
