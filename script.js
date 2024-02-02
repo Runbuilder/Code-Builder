@@ -3,17 +3,21 @@ let dataArray = [];
 let sheetNames = [];
 let aData = '';
 let bData = '';
-let sheetId = '';
+const sheetId = '1dCPa8dvEZIoOCyZ2pAhgs4axVbZqmL1eEuk8F5XlsqQ';
+const scriptURL = 'AKfycbzNIBs_4ZjRDL3ku6tvFhoSKRynZD3YPfcAIeUxQzZ1eu2dZWt55TwVzqf9yNM-7L-eQw';
+
 let language = 'ko';
+let password = ''
 // 데이터를 가져오는 함수를 정의합니다.
 async function getData(sheetIndex) {
   // 화면을 초기화하고 로딩 표시를 표시합니다.
+  document.getElementById('request').value = "";
+  document.getElementById('comment').value = "";
+
   document.getElementById('cardContainer').innerHTML = "";
   document.getElementById('loading').style.display = 'block';
 
   // Google Sheets의 시트 ID와 Google Apps Script의 스크립트 URL을 설정합니다.
-  sheetId = '1dCPa8dvEZIoOCyZ2pAhgs4axVbZqmL1eEuk8F5XlsqQ';
-  const scriptURL = 'AKfycbxMsLh_CsKktXRwz_VL6JYJtF7NeqI6YnYq_td3ucUhujSS0f61N9EzrvVvPboDLx45tw';
   const URL = sheetIndex ? `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&param=${encodeURIComponent(sheetIndex)} ` : `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)} `;
 
   // 주소로 접속하여 데이터를 가져오는 비동기 작업을 시도합니다.
@@ -46,7 +50,9 @@ async function getData(sheetIndex) {
 
     // 시트 이름과 데이터를 화면에 표시하는 함수를 호출합니다.
     sheetShow(sheetNames)
-    dataShow(dataArray, scriptURL, sheetIndex);
+    dataShow(dataArray);
+    password = dataArray[0][1]; // B2 셀 데이터
+    // console.log(dataArray, password);
 
   } catch (error) {
     console.error('Google Apps Script 호출 실패2:', error);
@@ -77,16 +83,12 @@ function sheetShow(sheetNames) {
 }
 
 // 데이터 배열을 카드 버튼으로 표시하는 함수를 정의합니다.
-function dataShow(dataArray, scriptURL, sheetIndex) {
-  console.log(dataArray);
+function dataShow(dataArray) {
   const cardContainer = document.getElementById('cardContainer');
   cardContainer.innerHTML = '';
 
   dataArray.forEach((item) => {
     const button = document.createElement('button');
-    // button.style.backgroundImage = `url('${item[2]}')`;
-    // button.style.width = '160px';
-    // button.style.height = '60px';
 
     const span = document.createElement('span');
     span.innerHTML = `${item[1].toString()}`;
@@ -114,46 +116,95 @@ function dataShow(dataArray, scriptURL, sheetIndex) {
   });
 }
 
-// 기타 함수들 (goDraw, boom, meta)은 웹 페이지의 다른 기능을 수행하는 함수들입니다.
 
-function goDraw() {
-  const textarea = document.querySelector('textarea');
-  navigator.clipboard.writeText(textarea.value)
-    .then(() => {
-      const url = 'https://www.bing.com/images/create'
-      window.open(url, '_blank');
-    })
-}
-function boom() {
-  const textarea = document.querySelector('textarea');
-  textarea.value = " ";
-}
+// 비밀번호 확인 함수
+async function checkPassword() {
 
-function runCode(code) {
-  if (code.length === 0) {
-    return;
-  }
-  var newWindow = window.open("", "_blank");
-  newWindow.document.open();
-  newWindow.document.write(code);
-  newWindow.document.close();
-}
-
-let editor = '';
-let editorContainer = null; // 전역 변수로 선언
-async function getCode() {
   let questCode = document.getElementById('request').value;
-  const imageInput = document.getElementById('imageInput');
+  const passwordInput = document.getElementById('password').value;
 
-  if (questCode.length <= 1) {
+  if (passwordInput.length <= 1) {
     Swal.fire({
       title: '경고',
-      text: '내용을 입력해주세요',
+      text: '비밀번호를 입력해주세요',
       icon: 'warning',
       confirmButtonText: '확인'
     });
     return;
   }
+
+  if (questCode.length <= 1) {
+    Swal.fire({
+      title: '경고',
+      text: '프롬프트 내용을 입력해주세요',
+      icon: 'warning',
+      confirmButtonText: '확인'
+    });
+    return;
+  }
+
+  // 팝업 창 표시
+  Swal.fire({
+    title: "코드 분석중..",
+    html: "잠시 기다려 주세요...",
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    showConfirmButton: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
+
+  // Google Apps Script 호출 URL 구성
+  const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&pw=${encodeURIComponent(passwordInput)}`;
+
+  try {
+    const response = await fetch(URL, { mode: 'cors' });
+    const data = await response.json();
+
+    // 인증 성공 여부 확인
+    if (data.authSuccess) {
+      // 코드 가져오기 함수 호출 또는 인증 성공 시의 로직
+      console.log('인증 성공');
+      getCode(); // 필요한 경우 주석 해제
+      saveData();//프롬프트내용저장
+    } else {
+      // 인증 실패 알림
+      Swal.fire({
+        title: '경고',
+        text: '올바른 비밀번호를 입력해주세요',
+        icon: 'warning',
+        confirmButtonText: '확인'
+      });
+    }
+  } catch (error) {
+    console.error('인증 과정에서 오류가 발생했습니다:', error);
+  }
+}
+
+async function saveData(coments) {
+  let coment = `댓글 : ${document.getElementById('comment').value}`
+  let questCode = coments?coment:document.getElementById('request').value;
+  const data = {
+    prompt: questCode, 
+    sheetId : sheetId
+  };
+  const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?order=saveData`;
+  try {
+    const response = await fetch(URL, { method: 'POST', body: JSON.stringify(data), mode: 'no-cors' });
+    document.getElementById('comment').value = "";
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+let editor = '';
+let editorContainer = null; // 전역 변수로 선언
+
+async function getCode() {
+  const imageInput = document.getElementById('imageInput');
+  let questCode = document.getElementById('request').value;
 
   const Url = `https://port-0-totalserver-9zxht12blq81t0ot.sel4.cloudtype.app/generate/html`;
 
@@ -166,23 +217,40 @@ async function getCode() {
     editorContainer.remove();
   }
 
-  // 팝업 창 표시
-  Swal.fire({
-    title: "코드 작성중..",
-    html: "잠시 기다려 주세요...",
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    showConfirmButton: false,
-    didOpen: () => {
-      Swal.showLoading();
+  // fetch를 위한 재시도 횟수 설정
+  const maxAttempts = 3;
+  let attempt = 0;
+  let response;
+  while(attempt < maxAttempts) {
+    try {
+      response = await fetch(Url, {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) throw new Error('Network response was not ok.');
+      // 성공한 경우, 반복문 탈출
+      console.log(`Attempt ${attempt + 1}: Success`);
+      break;
+    } catch (error) {
+      console.error(`Attempt ${attempt + 1} failed:`, error);
+      attempt++;
+        if (attempt < maxAttempts) {
+          console.log(`Retrying... Attempt ${attempt + 1}`);
+        } else {
+          console.log('Max retry attempts reached. Failing...');
+          Swal.fire({
+            title: '에러',
+            text: '분석 중 에러가 발생했습니다!',
+            icon: 'error',
+            confirmButtonText: '닫기'
+          });
+        return; // 최대 시도 횟수에 도달하면 함수 종료
+      }
     }
-  });
+  }
 
   try {
-    const response = await fetch(Url, {
-      method: 'POST',
-      body: formData
-    });
+    // fetch 성공 후의 로직
     const data = await response.json();
     let code = data.text;
     let responseElement = code.replace(/```html/g, '').replace(/```/g, '');
@@ -201,9 +269,9 @@ async function getCode() {
     //버튼표시
     const btnDiv = document.createElement('div');
     btnDiv.style.display = 'flex';
-    
+
     const pwa = document.createElement('button');
-    pwa.textContent = '📱Make PWA';
+    pwa.textContent = '📱PWA';
     pwa.classList.add('btn-primary');
     pwa.classList.add('btnBuild');
 
@@ -329,6 +397,7 @@ async function getCode() {
 
   } catch (error) {
     console.error('Error:', error);
+    // 이 catch 블록은 JSON 파싱 또는 그 이후의 로직에서 오류가 발생했을 때 실행됩니다.
     Swal.fire({
       title: '에러',
       text: '분석 중 에러가 발생했습니다!',
@@ -338,6 +407,16 @@ async function getCode() {
   }
 }
 
+
+function runCode(code) {
+  if (code.length === 0) {
+    return;
+  }
+  var newWindow = window.open("", "_blank");
+  newWindow.document.open();
+  newWindow.document.write(code);
+  newWindow.document.close();
+}
 
 function downloadFile(value) {
   if (value.length < 10) { return; }
@@ -363,61 +442,3 @@ function downloadFile(value) {
   a.href = URL.createObjectURL(blob);
   a.click();
 }
-
-
-// async function getCode() {
-//   let questCode = document.getElementById('request').value;
-//   const imageInput = document.getElementById('imageInput');
-//   console.log(questCode);
-
-//   if (questCode.length <= 1) {
-//     Swal.fire({
-//       title: '경고',
-//       text: '내용을 입력해주세요',
-//       icon: 'warning',
-//       confirmButtonText: '확인'
-//     });
-//     return;
-//   }
-//   const Url = `https://port-0-totalserver-9zxht12blq81t0ot.sel4.cloudtype.app/generate/html`;
-//   const formData = new FormData();
-//   formData.append('image', imageInput.files[0]);
-//   formData.append('userInput', questCode);
-//   try {
-//     const response = await fetch(Url, {
-//       method: 'POST',
-//       body: formData
-//     });
-//     const data = await response.json();
-//     let code = data.text;
-//     let responseElement = code.replace(/```html/g, '').replace(/```/g, '');
-
-//     Swal.fire({
-//       title: 'CODE',
-//       html: '<div id="editor" style="height: 400px;"></div>', // 편집기를 위한 컨테이너
-//       focusConfirm: false,
-//       didOpen: () => {
-//         editor = ace.edit('editor');
-//         editor.session.setMode("ace/mode/javascript");
-//         editor.setTheme("ace/theme/monokai");
-//         editor.setValue(responseElement);
-//       },
-//       preConfirm: () => {
-//         return editor.getValue(); // Ace 편집기의 값을 반환
-//       }
-//     }).then((result) => {
-//       if (result.isConfirmed) {
-//         runCode(result.value); 
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error:', error);
-//     Swal.fire({
-//       title: '에러',
-//       text: '분석 중 에러가 발생했습니다!',
-//       icon: 'error',
-//       confirmButtonText: '닫기'
-//     });
-//   }
-// }
