@@ -42,33 +42,36 @@
       <!-- 텍스트에리어 -->
       <div style="text-align:center;padding: 15px;">
         <div style="display: flex;">
-          <!-- <button class="btn-primary btnCopy" onclick="meta()">💾meta</button> -->
 
           <input class="btn-primary btnCopy" type="file" id="imageInput" accept="image/*"
             onchange="handleFileSelect(event)">
 
-          <button class="btn-danger" onclick="boom()"
-            style="width:120px;color: white;font-weight: 900;height: 40px;">DEL</button>
-          <button class="btn-primary btnCopy2" onclick="getCode()">✨GET CODE </button>
+          <!-- <button class="btn-danger" onclick="boom()"
+            style="width:120px;color: white;font-weight: 900;height: 40px;">DEL</button> -->
+          <!-- 비밀번호 입력란 -->
+          <input type="password" id="password" style="width: 100px;" placeholder="비밀번호">
+
+          <button class="btn-primary btnCopy2" onclick="checkPassword()">✨GET CODE </button>
         </div>
-        <textarea id="request" style=" min-height: 200px" placeholder="앱 제목,디자인,기능.. 을 설명해주세요"> </textarea>
+        <textarea id="request" style=" min-height: 200px" placeholder="앱 제목, 기능, 디자인을 적고 'GET CODE'버튼을 누르면 코드가 만들어집니다 "> </textarea>
       </div>
   </header>
 
   <main>
-    <!-- <h1 class="title" style="text-align: center;font-weight:900;"></h1>
-    <div id="loading" style="display: none; text-align: center;padding: 30px;">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">로딩 중...</span>
-      </div>
-      <p>로딩 중...</p>
-    </div>
-    <div id="cardContainer"> </div> -->
   </main>
 
-  <footer style="margin:30px 0; " class="text-gray-800 dark:text-white ">
-    2023 © Build by🦾<a href="https://www.youtube.com/channel/UCLP2jMz-MpVgsGizdjfQDZA" target="_blank"
+  <footer  class="text-gray-800 dark:text-white ">
+
+    <div style="text-align:center;padding: 15px;">
+      <button class="btn-info btnCopy2" onclick="saveData('comment')">🗨️Comment </button>
+      <textarea id="comment"  placeholder="이용후기 & 문의사항"> </textarea>
+      <div style="display: flex;">   
+        
+      </div>
+    </div>
+    <span style="margin-bottom:20px; ">  2023 © Build by🦾<a href="https://www.youtube.com/channel/UCLP2jMz-MpVgsGizdjfQDZA" target="_blank"
       style="font-weight: 900;">RunBuilder</a>
+      </span>
   </footer>
   <script src="script.js">
   </script>
