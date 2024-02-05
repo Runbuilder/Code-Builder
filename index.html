@@ -49,7 +49,7 @@
           <!-- <button class="btn-danger" onclick="boom()"
             style="width:120px;color: white;font-weight: 900;height: 40px;">DEL</button> -->
           <!-- 비밀번호 입력란 -->
-          <input type="password" id="password" style="width: 100px;" placeholder="비밀번호">
+          <input type="password" id="password" value="run" style="width: 100px;" placeholder="비밀번호">
 
           <button class="btn-primary btnCopy2" onclick="checkPassword()">✨GET CODE </button>
         </div>
@@ -57,17 +57,32 @@
       </div>
   </header>
 
+  <div id="editorContainer" style="text-align: center; margin-top: 10px; padding: 0 15px;">
+    <div style="display: flex;">
+      <!-- Run Build 버튼 -->
+      <button class="btn-primary btnBuild" id="runBuild">🚀Run Build</button>
+      <!-- PWA 버튼 (필요에 따라 주석 처리 또는 추가) -->
+    </div>
+    <!-- Ace Editor 컨테이너 -->
+    <div id="editor" style="height: 400px;"></div>
+    <div style="display: flex;">
+      <!-- 하단 버튼들 -->
+      <button class="btn-primary btnBuild" id="htmlCode">HTML</button>
+      <button class="btn-info btnBuild" id="pwa">PWA</button>
+      <button class="btn-info btnBuild" id="manifest">Manifest</button>
+      <button class="btn-info btnBuild" id="serviceWorkers">Service</button>
+      <button class="btn-primary btnBuild" id="save">SAVE</button>
+    </div>
+  </div>
+  
   <main>
   </main>
 
   <footer  class="text-gray-800 dark:text-white ">
 
     <div style="text-align:center;padding: 15px;">
-      <button class="btn-info btnCopy2" onclick="saveData('comment')">🗨️Comment </button>
-      <textarea id="comment"  placeholder="이용후기 & 문의사항"> </textarea>
-      <div style="display: flex;">   
-        
-      </div>
+      <button class="btn-Warning btnCopy2" onclick="saveData('comment')">🗨️Comment </button>
+      <textarea id="comment"  placeholder="이용후기 & 문의사항"> </textarea> 
     </div>
     <span style="margin-bottom:20px; ">  2023 © Build by🦾<a href="https://www.youtube.com/channel/UCLP2jMz-MpVgsGizdjfQDZA" target="_blank"
       style="font-weight: 900;">RunBuilder</a>
