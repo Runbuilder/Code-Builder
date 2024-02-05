@@ -5,9 +5,44 @@ let aData = '';
 let bData = '';
 const sheetId = '1dCPa8dvEZIoOCyZ2pAhgs4axVbZqmL1eEuk8F5XlsqQ';
 const scriptURL = 'AKfycbzNIBs_4ZjRDL3ku6tvFhoSKRynZD3YPfcAIeUxQzZ1eu2dZWt55TwVzqf9yNM-7L-eQw';
-
 let language = 'ko';
-let password = ''
+let password = '';
+let editor = '';
+let editorContainer = null; // 전역 변수로 선언
+let responseElement = `
+  <html lang="ko">
+      <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>제목</title>
+      </head>
+      <body>
+        <h1>너는 무엇을 만들고 싶니?</h1>
+      </body>
+  </html>`;
+let runTF = true;
+let pwaTF = false;
+let pwaVal = ""
+
+//문서 로드되면 편집기 초기화
+document.addEventListener('DOMContentLoaded', function() {
+  // Ace Editor 컨테이너를 선택
+  editor = ace.edit('editor');
+  // 사용할 프로그래밍 언어 모드를 설정 (여기서는 JavaScript)
+  editor.session.setMode("ace/mode/javascript");
+  // 에디터의 테마 설정 (여기서는 Monokai)
+  editor.setTheme("ace/theme/monokai");
+  // 필요한 경우, 에디터의 기본 설정을 변경
+  editor.session.setOptions({
+    tabSize: 4,
+    useSoftTabs: true
+  });
+  //처음 편집기에 들어갈 문장 코드
+  editor.setValue(responseElement, -1);
+  // -1은 커서 위치를 문서의 시작으로 설정
+});
+
 // 데이터를 가져오는 함수를 정의합니다.
 async function getData(sheetIndex) {
   // 화면을 초기화하고 로딩 표시를 표시합니다.
@@ -129,10 +164,8 @@ function dataShow(dataArray) {
 
 // 비밀번호 확인 함수
 async function checkPassword() {
-
   let questCode = document.getElementById('request').value;
   const passwordInput = document.getElementById('password').value;
-
   if (passwordInput.length <= 1) {
     Swal.fire({
       title: '경고',
@@ -142,7 +175,6 @@ async function checkPassword() {
     });
     return;
   }
-
   if (questCode.length <= 1) {
     Swal.fire({
       title: '경고',
@@ -152,7 +184,6 @@ async function checkPassword() {
     });
     return;
   }
-
   // 팝업 창 표시
   Swal.fire({
     title: "코드 분석중..",
@@ -164,15 +195,11 @@ async function checkPassword() {
       Swal.showLoading();
     }
   });
-
-
   // Google Apps Script 호출 URL 구성
   const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&pw=${encodeURIComponent(passwordInput)}`;
-
   try {
     const response = await fetch(URL, { mode: 'cors' });
     const data = await response.json();
-
     // 인증 성공 여부 확인
     if (data.authSuccess) {
       // 코드 가져오기 함수 호출 또는 인증 성공 시의 로직
@@ -209,24 +236,16 @@ async function saveData(coments) {
   }
 }
 
-let editor = '';
-let editorContainer = null; // 전역 변수로 선언
 
 async function getCode() {
   const imageInput = document.getElementById('imageInput');
   let questCode = document.getElementById('request').value;
-
   const Url = `https://port-0-totalserver-9zxht12blq81t0ot.sel4.cloudtype.app/generate/html`;
-
   const formData = new FormData();
   formData.append('image', imageInput.files[0]);
   formData.append('userInput', questCode);
-
   // 기존의 editorContainer 삭제 (중복 방지)
-  if (editorContainer) {
-    editorContainer.remove();
-  }
-
+  if (editorContainer) { editorContainer.remove(); }
   // fetch를 위한 재시도 횟수 설정
   const maxAttempts = 3;
   let attempt = 0;
@@ -263,148 +282,14 @@ async function getCode() {
     // fetch 성공 후의 로직
     const data = await response.json();
     let code = data.text;
-    let responseElement = code.replace(/```html/g, '').replace(/```/g, '');
+    responseElement = code.replace(/```html/g, '').replace(/```/g, '');
 
     // 팝업 창 닫기
     Swal.close();
 
-
-    // textarea 아래에 편집기 테두리 표시
-    editorContainer = document.createElement('div');
-    editorContainer.id = 'editorContainer';
-    editorContainer.style.textAlign = 'center';
-    editorContainer.style.marginTop = '10px';
-    editorContainer.style.padding = '0 15px';
-
-    //버튼표시
-    const btnDiv = document.createElement('div');
-    btnDiv.style.display = 'flex';
-
-    const pwa = document.createElement('button');
-    pwa.textContent = '📱PWA';
-    pwa.classList.add('btn-primary');
-    pwa.classList.add('btnBuild');
-
-    const button = document.createElement('button');
-    button.textContent = '🚀Run Build';
-    button.classList.add('btn-primary');
-    button.classList.add('btnBuild');
-    //아래버튼표시
-    const btnDiv2 = document.createElement('div');
-    btnDiv2.style.display = 'flex';
-    const htmlCode = document.createElement('button');
-    htmlCode.textContent = 'index.html';
-    htmlCode.classList.add('btn-primary');
-    htmlCode.classList.add('btnBuild');
-    const manifest = document.createElement('button');
-    manifest.textContent = 'Manifest';
-    manifest.classList.add('btn-primary');
-    manifest.classList.add('btnBuild');
-    const serviceWorkers = document.createElement('button');
-    serviceWorkers.textContent = 'Service';
-    serviceWorkers.classList.add('btn-primary');
-    serviceWorkers.classList.add('btnBuild');
-    const save = document.createElement('button');
-    save.textContent = 'SAVE';
-    save.classList.add('btn-primary');
-    save.classList.add('btnBuild');
-
-    //편집기 
-    const editorElement = document.createElement('div');
-    editorElement.id = 'editor';
-    editorElement.style.height = '400px';
-
-    //컨테이너에 편집기와 버튼 추가
-    // btnDiv.appendChild(pwa);
-    btnDiv.appendChild(button);
-    btnDiv2.appendChild(htmlCode);
-    btnDiv2.appendChild(pwa);
-    btnDiv2.appendChild(manifest);
-    btnDiv2.appendChild(serviceWorkers);
-    btnDiv2.appendChild(save);
-
-    editorContainer.appendChild(btnDiv);
-    editorContainer.appendChild(editorElement);
-    editorContainer.appendChild(btnDiv2);
-
-
-    //헤더에 컨테이너 추가
-    const main = document.querySelector('header');
-    main.appendChild(editorContainer);
-
-    // Ace 편집기 초기화
-    editor = ace.edit('editor');
     editor.session.setMode("ace/mode/javascript");
     editor.setTheme("ace/theme/monokai");
     editor.setValue(responseElement);
-    htmlCode.addEventListener('click', () => { editor.setValue(responseElement); });
-    manifest.addEventListener('click', () => {
-      const file = 'manifest.js'; // 가져올 파일의 이름
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          const fileContent = xhr.responseText;
-          // Ace 에디터에 파일 내용을 설정
-          editor.setValue(fileContent);
-        }
-      };
-      xhr.open('GET', file, true);
-      xhr.send();
-    });
-    serviceWorkers.addEventListener('click', () => {
-      const file = 'serviceWorker.js'; // 가져올 파일의 이름
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          const fileContent = xhr.responseText;
-          // Ace 에디터에 파일 내용을 설정
-          editor.setValue(fileContent);
-        }
-      };
-      xhr.open('GET', file, true);
-      xhr.send();
-    });
-    save.addEventListener('click', () => { downloadFile(editor.getValue()) });
-
-    pwa.addEventListener('click', () => {
-      const code1 = editor.getValue()
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(code1, "text/html");
-
-      const head = doc.head;
-      const body = doc.body;
-
-      const manifestLink = document.createElement("link");
-      manifestLink.setAttribute("rel", "manifest");
-      manifestLink.setAttribute("href", "/manifest.json");
-
-      const script = document.createElement("script");
-      script.innerHTML = `
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./serviceWorker.js')
-              .then(registration => {
-                console.log('Service worker registered:', registration);
-              })
-              .catch(error => {
-                console.log('Service worker registration failed:', error);
-              });
-          });
-        }
-      `;
-
-      head.appendChild(manifestLink);
-      body.appendChild(script);
-      // 수정된 HTML 내용을 Ace 편집기에 설정
-      editor.setValue(doc.documentElement.outerHTML);
-    });
-
-    button.addEventListener('click', () => {
-      const code = editor.getValue()
-      runCode(code)
-    });
-
   } catch (error) {
     console.error('Error:', error);
     // 이 catch 블록은 JSON 파싱 또는 그 이후의 로직에서 오류가 발생했을 때 실행됩니다.
@@ -417,11 +302,104 @@ async function getCode() {
   }
 }
 
+const htmlCode = document.querySelector('#htmlCode');
+htmlCode.addEventListener('click', () => {
+  runTF = true;
 
-function runCode(code) {
-  if (code.length === 0) {
+  editor.setValue(responseElement);
+  pwaTF = false;
+});
+
+const manifest = document.querySelector('#manifest');
+manifest.addEventListener('click', () => {
+  runTF = false;
+  // runBuild.classList.add('disabled')
+
+  const file = 'manifest.js'; // 가져올 파일의 이름
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const fileContent = xhr.responseText;
+      // Ace 에디터에 파일 내용을 설정
+      editor.setValue(fileContent);
+    }
+  };
+  xhr.open('GET', file, true);
+  xhr.send();
+});
+
+const serviceWorkers = document.querySelector('#serviceWorkers');
+serviceWorkers.addEventListener('click', () => {
+  runTF = false;
+
+  const file = 'serviceWorker.js'; // 가져올 파일의 이름
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const fileContent = xhr.responseText;
+      // Ace 에디터에 파일 내용을 설정
+      editor.setValue(fileContent);
+    }
+  };
+  xhr.open('GET', file, true);
+  xhr.send();
+});
+
+const save = document.querySelector('#save');
+save.addEventListener('click', () => { downloadFile(editor.getValue()) });
+
+const pwa = document.querySelector('#pwa');
+pwa.addEventListener('click', () => {
+  runTF = true;
+  const code1 = editor.getValue()
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(code1, "text/html");
+  if (pwaTF) {
+    editor.setValue(pwaVal);
     return;
   }
+  const head = doc.head;
+  const body = doc.body;
+
+  const manifestLink = document.createElement("link");
+  manifestLink.setAttribute("rel", "manifest");
+  manifestLink.setAttribute("href", "/manifest.json");
+  const script = document.createElement("script");
+  script.innerHTML = `
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./serviceWorker.js')
+          .then(registration => {
+            console.log('Service worker registered:', registration);
+          })
+          .catch(error => {
+            console.log('Service worker registration failed:', error);
+          });
+      });
+    }
+  `;
+
+  head.appendChild(manifestLink);
+  body.appendChild(script);
+  // 수정된 HTML 내용을 Ace 편집기에 설정
+  editor.setValue(doc.documentElement.outerHTML);
+  pwaVal = doc.documentElement.outerHTML;
+  pwaTF = true;
+
+});
+
+const runBuild = document.querySelector('#runBuild');
+runBuild.addEventListener('click', () => {
+  const code = editor.getValue()
+  if (code.length === 0 || !runTF) {
+    return;
+  }
+
+  runCode(code)
+});
+
+
+function runCode(code) {
   var newWindow = window.open("", "_blank");
   newWindow.document.open();
   newWindow.document.write(code);
