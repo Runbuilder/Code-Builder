@@ -11,7 +11,7 @@ let password = ''
 // 데이터를 가져오는 함수를 정의합니다.
 async function getData(sheetIndex) {
   // 화면을 초기화하고 로딩 표시를 표시합니다.
-  // document.getElementById('request').value = "";
+  document.getElementById('request').value = "";
   document.getElementById('comment').value = "";
 
   document.getElementById('cardContainer').innerHTML = "";
@@ -64,6 +64,7 @@ async function getData(sheetIndex) {
 getData();
 // 시트 이름 데이터를 메뉴 버튼으로 표시하는 함수를 정의합니다.
 let exam = true;
+
 function sheetShow(sheetNames) {
   var data = sheetNames.slice(1);
   data.forEach((name, index) => {
@@ -78,8 +79,6 @@ function sheetShow(sheetNames) {
       } else {
         exam = false;
       }
-      console.log('hi', index, exam);
-
       document.querySelector('.title').innerHTML = name;
       // 선택한 시트의 데이터를 가져오는 함수를 호출합니다.
       getData(index + 1);
@@ -90,6 +89,7 @@ function sheetShow(sheetNames) {
 }
 
 // 데이터 배열을 카드 버튼으로 표시하는 함수를 정의합니다.
+
 function dataShow(dataArray) {
   const cardContainer = document.getElementById('cardContainer');
   cardContainer.innerHTML = '';
@@ -112,8 +112,8 @@ function dataShow(dataArray) {
 
     // 버튼 클릭 시 데이터를 팝업 창으로 표시하는 이벤트 리스너를 추가합니다.
     button.addEventListener('click', function() {
-      let textarea = document.querySelector('textarea');
-      
+
+      const textarea = document.querySelector('textarea');
       if (exam) { textarea.value = "" }
 
       if (language == 'ko' && item[2]) { // item[0] 존재 여부 확인
@@ -269,7 +269,68 @@ async function getCode() {
     Swal.close();
 
 
+    // textarea 아래에 편집기 테두리 표시
+    editorContainer = document.createElement('div');
+    editorContainer.id = 'editorContainer';
+    editorContainer.style.textAlign = 'center';
+    editorContainer.style.marginTop = '10px';
+    editorContainer.style.padding = '0 15px';
 
+    //버튼표시
+    const btnDiv = document.createElement('div');
+    btnDiv.style.display = 'flex';
+
+    const pwa = document.createElement('button');
+    pwa.textContent = '📱PWA';
+    pwa.classList.add('btn-primary');
+    pwa.classList.add('btnBuild');
+
+    const button = document.createElement('button');
+    button.textContent = '🚀Run Build';
+    button.classList.add('btn-primary');
+    button.classList.add('btnBuild');
+    //아래버튼표시
+    const btnDiv2 = document.createElement('div');
+    btnDiv2.style.display = 'flex';
+    const htmlCode = document.createElement('button');
+    htmlCode.textContent = 'index.html';
+    htmlCode.classList.add('btn-primary');
+    htmlCode.classList.add('btnBuild');
+    const manifest = document.createElement('button');
+    manifest.textContent = 'Manifest';
+    manifest.classList.add('btn-primary');
+    manifest.classList.add('btnBuild');
+    const serviceWorkers = document.createElement('button');
+    serviceWorkers.textContent = 'Service';
+    serviceWorkers.classList.add('btn-primary');
+    serviceWorkers.classList.add('btnBuild');
+    const save = document.createElement('button');
+    save.textContent = 'SAVE';
+    save.classList.add('btn-primary');
+    save.classList.add('btnBuild');
+
+    //편집기 
+    const editorElement = document.createElement('div');
+    editorElement.id = 'editor';
+    editorElement.style.height = '400px';
+
+    //컨테이너에 편집기와 버튼 추가
+    // btnDiv.appendChild(pwa);
+    btnDiv.appendChild(button);
+    btnDiv2.appendChild(htmlCode);
+    btnDiv2.appendChild(pwa);
+    btnDiv2.appendChild(manifest);
+    btnDiv2.appendChild(serviceWorkers);
+    btnDiv2.appendChild(save);
+
+    editorContainer.appendChild(btnDiv);
+    editorContainer.appendChild(editorElement);
+    editorContainer.appendChild(btnDiv2);
+
+
+    //헤더에 컨테이너 추가
+    const main = document.querySelector('header');
+    main.appendChild(editorContainer);
 
     // Ace 편집기 초기화
     editor = ace.edit('editor');
