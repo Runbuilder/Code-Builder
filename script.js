@@ -23,7 +23,8 @@ let responseElement = `
   </html>`;
 let runTF = true;
 let pwaTF = false;
-let pwaVal = ""
+let pwaVal = "";
+let examTF = true;
 
 //문서 로드되면 편집기 초기화
 document.addEventListener('DOMContentLoaded', function() {
@@ -149,8 +150,13 @@ function dataShow(dataArray) {
     button.addEventListener('click', function() {
 
       const textarea = document.querySelector('textarea');
+      let value = editor.getValue()
+      console.log(exam,value)
       if (exam) { textarea.value = "" }
+      if (exam) {  editor.setValue(item[3].toString());  }
 
+
+     
       if (language == 'ko' && item[2]) { // item[0] 존재 여부 확인
         textarea.value += " " + item[2].toString();
       } else if (language == 'en' && item[0]) { // item[3] 존재 여부 확인
@@ -164,6 +170,7 @@ function dataShow(dataArray) {
 
 // 비밀번호 확인 함수
 async function checkPassword() {
+  if(exam){return;}
   let questCode = document.getElementById('request').value;
   const passwordInput = document.getElementById('password').value;
   if (passwordInput.length <= 1) {
@@ -236,7 +243,6 @@ async function saveData(coments) {
   }
 }
 
-
 async function getCode() {
   const imageInput = document.getElementById('imageInput');
   let questCode = document.getElementById('request').value;
@@ -245,7 +251,7 @@ async function getCode() {
   formData.append('image', imageInput.files[0]);
   formData.append('userInput', questCode);
   // 기존의 editorContainer 삭제 (중복 방지)
-  if (editorContainer) { editorContainer.remove(); }
+  if (editorContainer) { editorContainer.remove(); } 
   // fetch를 위한 재시도 횟수 설정
   const maxAttempts = 3;
   let attempt = 0;
@@ -430,3 +436,40 @@ function downloadFile(value) {
   a.href = URL.createObjectURL(blob);
   a.click();
 }
+
+// document.getElementById('deployBtn').addEventListener('click', function() {
+//   const zip = new JSZip();
+//   // index.html 파일을 포함하는 폴더를 생성합니다.
+//   // 예시로 'website'라는 폴더를 생성하여 파일을 추가합니다.
+//   zip.folder("website").file("index.html", editor.getValue());
+
+//   var netlifyToken = 'nfp_wYwpHMXDZrzE5WRVQHFyvmqAsSjMPEsq2655'; // 주의: 실제 사용시 보안 관련 대책 필요
+//   var apiURL = `https://api.netlify.com/api/v1/sites`;
+
+//   // JSZip의 generateAsync 메서드를 사용하여 비동기적으로 ZIP 파일 생성
+//   zip.generateAsync({type: 'blob'})
+//     .then(function(content) {
+//       const formData = new FormData();
+//       formData.append('zip', content);
+
+//       // Fetch API를 사용하여 넷틀리파이에 배포 요청
+//       // Content-Type을 'application/zip'으로 설정하는 부분은 제거합니다.
+//       // 이는 Fetch API가 FormData 객체를 사용할 때 자동으로 적절한 Content-Type을 설정하기 때문입니다.
+//       return fetch(apiURL, {
+//         method: 'POST',
+//         headers: {
+//           'Authorization': `Bearer ${netlifyToken}`
+//         },
+//         body: formData
+//       });
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//       const tempURL = data.deploy_url;
+//       document.getElementById('tempURL').textContent = tempURL;
+//     })
+//     .catch(error => {
+//       console.error('Error:', error);
+//       document.getElementById('tempURL').textContent = '배포 중 오류가 발생했습니다.';
+//     });
+// });
