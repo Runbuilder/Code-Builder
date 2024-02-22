@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 데이터를 가져오는 함수를 정의합니다.
 async function getData(sheetIndex) {
   // 화면을 초기화하고 로딩 표시를 표시합니다.
-  document.getElementById('request').value = "";
+  // document.getElementById('request').value = "";
   document.getElementById('comment').value = "";
 
   document.getElementById('cardContainer').innerHTML = "";
