@@ -152,7 +152,8 @@ input {
 .btn2:hover {
   background-color: #fcd53f;
   color: white;
-} 
+}
+
 .btn2::after {
   content: '';
   position: absolute;
@@ -189,7 +190,7 @@ input {
   padding: 5px;
   width: 100%;
   color: white;
-  border-radius: 5px 0 0 0;
+  border-radius: 0 0 0 5px;
 }
 
 .btnCopy2 {
@@ -198,7 +199,7 @@ input {
   font-weight: 900;
   font-size: 18px;
   width: 100%;
-  border-radius: 0 5px 0 0;
+  border-radius: 0 0 5px 0;
 }
 
 .btnBuild {
@@ -217,15 +218,102 @@ input {
   color: #040a22;
 }
 
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
   color: #a3a3a3;
 }
-::-moz-placeholder { /* Firefox 19+ */
+
+::-moz-placeholder {
+  /* Firefox 19+ */
   color: #a3a3a3;
 }
-:-ms-input-placeholder { /* IE 10+ */
+
+:-ms-input-placeholder {
+  /* IE 10+ */
   color: #a3a3a3;
 }
-:-moz-placeholder { /* Firefox 18- */
+
+:-moz-placeholder {
+  /* Firefox 18- */
   color: #a3a3a3;
+}
+
+
+/* Contact Section Styles */
+#contact {
+  background-color: #474747;
+  margin-bottom: 10px;
+}
+
+.contact-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.contact-info,
+.contact-form {
+  width: calc(50% - 40px);
+  margin: 20px;
+}
+
+.contact-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-form input,
+.contact-form textarea {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.contact-form button {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+.contact-info,
+.contact-form {
+  flex: 0 1 calc(50% - 40px);
+  /* Adjust to display two items per row */
+  margin: 20px;
+}
+
+
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+}
+
+.footer-content {
+  text-align: center;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 768px) {
+
+  .contact-info,
+  .contact-form {
+    margin: 20px auto;
+    width: 100%;
+  }
+
+  .contact-info,
+  .contact-form {
+    width: 100%;
+  }
 }
