@@ -1,4 +1,5 @@
 // 데이터 배열과 시트 이름을 저장하는 변수들을 초기화합니다.
+let allData = {}; // 모든 시트의 데이터를 저장할 객체
 let dataArray = [];
 let sheetNames = [];
 let aData = '';
@@ -24,7 +25,10 @@ let responseElement = `
 let runTF = true;
 let pwaTF = false;
 let pwaVal = "";
+let exam = true;
 let examTF = true;
+let buttonsCreated = false; // 버튼 생성 여부를 저장하는 변수
+let selectedButton = null; // 선택된 버튼을 저장하는 변수
 
 //문서 로드되면 편집기 초기화
 document.addEventListener('DOMContentLoaded', function() {
@@ -44,51 +48,40 @@ document.addEventListener('DOMContentLoaded', function() {
   // -1은 커서 위치를 문서의 시작으로 설정
 });
 
-// 데이터를 가져오는 함수를 정의합니다.
-async function getData(sheetIndex) {
+// 초기 데이터를 가져오는 함수를 정의합니다.
+async function getInitialData() {
   // 화면을 초기화하고 로딩 표시를 표시합니다.
-  // document.getElementById('request').value = "";
-  document.getElementById('comment').value = "";
-
   document.getElementById('cardContainer').innerHTML = "";
   document.getElementById('loading').style.display = 'block';
 
-  // Google Sheets의 시트 ID와 Google Apps Script의 스크립트 URL을 설정합니다.
-  const URL = sheetIndex ? `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&param=${encodeURIComponent(sheetIndex)} ` : `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)} `;
+  const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}`;
 
-  // 주소로 접속하여 데이터를 가져오는 비동기 작업을 시도합니다.
   try {
     const response = await fetch(URL, { mode: 'cors' });
     if (!response.ok) {
       throw new Error('Google Apps Script 호출 실패1, HTTP 상태 코드: ' + response.status);
     }
 
-    // 에러가 없다면 시트 이름과 데이터를 가져옵니다.
     const data = await response.json();
     sheetNames = data.sheetNames;
-    dataArray = data.data;
+
+    // 초기 화면에 표시할 데이터를 가져옵니다.
+    const initialSheetURL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&param=${encodeURIComponent(1)}`;
+    const initialSheetResponse = await fetch(initialSheetURL, { mode: 'cors' });
+    const initialSheetData = await initialSheetResponse.json();
+    allData[sheetNames[1]] = initialSheetData.data;
 
     // 화면 로딩 표시를 숨기고 데이터를 표시합니다.
-    document.getElementById('loading').style.display = 'none';
-
-    if (!sheetIndex) {
-      document.querySelector('.title').innerHTML = sheetNames[1];
-    }
-
-    if (dataArray.length < 2) {
-      console.log(dataArray, '자료없음');
-      document.querySelector('.data').innerHTML =
-        '<h3 style="text-align:center">자료가 없습니다. 시트정보를 확인해주세요.</h3>';
-      return;
-    } else {
-      document.querySelector('.data').innerHTML = "";
-    }
+    // document.getElementById('loading').style.display = 'none';
+    // document.querySelector('.title').innerHTML = sheetNames[1];
 
     // 시트 이름과 데이터를 화면에 표시하는 함수를 호출합니다.
-    sheetShow(sheetNames)
-    dataShow(dataArray);
-    password = dataArray[0][1]; // B2 셀 데이터
-    // console.log(dataArray, password);
+    sheetShow(sheetNames);
+    dataShow(allData[sheetNames[1]]);
+    password = allData[sheetNames[1]][0][1]; // B2 셀 데이터
+
+    // 나머지 시트의 데이터를 백그라운드에서 가져옵니다.
+    getRemainingData();
 
   } catch (error) {
     console.error('Google Apps Script 호출 실패2:', error);
@@ -96,13 +89,28 @@ async function getData(sheetIndex) {
   }
 }
 
-// 웹 페이지 로드 시 데이터를 가져오는 함수를 호출합니다.
-getData();
-// 시트 이름 데이터를 메뉴 버튼으로 표시하는 함수를 정의합니다.
-let exam = true;
+// 나머지 시트의 데이터를 가져오는 함수를 정의합니다.
+async function getRemainingData() {
+  for (let i = 2; i < sheetNames.length; i++) {
 
+    const sheetURL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&param=${encodeURIComponent(i)}`;
+    const sheetResponse = await fetch(sheetURL, { mode: 'cors' });
+    const sheetData = await sheetResponse.json();
+    allData[sheetNames[i]] = sheetData.data;
+  }
+}
+
+// 웹 페이지 로드 시 초기 데이터를 가져오는 함수를 호출합니다.
+getInitialData();
+
+// 시트 이름 데이터를 메뉴 버튼으로 표시하는 함수를 정의합니다.
 function sheetShow(sheetNames) {
+  if (buttonsCreated) {
+    return; // 이미 버튼이 생성되었으면 함수를 종료합니다.
+  }
+
   var data = sheetNames.slice(1);
+
   data.forEach((name, index) => {
     const button = document.createElement('button');
     button.textContent = name;
@@ -110,29 +118,58 @@ function sheetShow(sheetNames) {
     button.classList.add('btn-info');
     button.classList.add('sheetBtn');
     button.addEventListener('click', () => {
+      // 이전에 선택된 버튼이 있다면 색상을 원래대로 변경합니다.
+      if (selectedButton) {
+        selectedButton.classList.remove('btn-primary');
+        selectedButton.classList.add('btn-info');
+      }
+
+      // 현재 선택된 버튼의 색상을 변경합니다.
+      button.classList.remove('btn-info');
+      button.classList.add('btn-primary');
+      selectedButton = button;
+
       if (index === 0) {
         exam = true;
       } else {
         exam = false;
       }
-      document.querySelector('.title').innerHTML = name;
-      // 선택한 시트의 데이터를 가져오는 함수를 호출합니다.
-      getData(index + 1);
+      // document.querySelector('.title').innerHTML = name;
+
+      // 클릭한 시트의 데이터가 로딩되지 않았을 경우 '로딩 중' 표시를 나타냅니다.
+      if (!allData[name]) {
+        document.getElementById('cardContainer').innerHTML = "";
+        document.getElementById('loading').style.display = 'block';
+      } else {
+        // 저장된 데이터를 사용하여 화면에 표시합니다.
+        dataShow(allData[name]);
+      }
     });
-    const btnContainer = document.querySelector('.data');
-    btnContainer.appendChild(button);
-  })
+    // const btnContainer = document.querySelector('.data');
+    // const btnContainer = document.querySelector('.data2');
+    // btnContainer.appendChild(button);
+
+    // 첫 번째 메뉴 버튼의 색상을 변경합니다.
+    if (index === 0) {
+      button.classList.remove('btn-info');
+      button.classList.add('btn-primary');
+      selectedButton = button;
+    }
+  });
+
+  buttonsCreated = true; // 버튼 생성 완료를 표시합니다.
 }
 
 // 데이터 배열을 카드 버튼으로 표시하는 함수를 정의합니다.
-
 function dataShow(dataArray) {
   const cardContainer = document.getElementById('cardContainer');
   cardContainer.innerHTML = '';
+  document.getElementById('loading').style.display = 'none';
+
+  let selectedButton = null; // 선택된 버튼을 저장하는 변수
 
   dataArray.forEach((item) => {
     const button = document.createElement('button');
-
     const span = document.createElement('span');
     span.innerHTML = `${item[1].toString()}`;
     span.style.position = 'relative';
@@ -148,29 +185,42 @@ function dataShow(dataArray) {
 
     // 버튼 클릭 시 데이터를 팝업 창으로 표시하는 이벤트 리스너를 추가합니다.
     button.addEventListener('click', function() {
+      const textarea = document.getElementById('request');
+      let value = editor.getValue();
+      console.log(exam, value);
+      if (exam) {
+        textarea.value = "";
+      }
+      if (exam) {
+        editor.setValue(item[3].toString());
+      }
 
-      const textarea = document.querySelector('textarea');
-      let value = editor.getValue()
-      console.log(exam,value)
-      if (exam) { textarea.value = "" }
-      if (exam) {  editor.setValue(item[3].toString());  }
-
-
-     
-      if (language == 'ko' && item[2]) { // item[0] 존재 여부 확인
+      if (language == 'ko' && item[2]) {
         textarea.value += " " + item[2].toString();
-      } else if (language == 'en' && item[0]) { // item[3] 존재 여부 확인
+      } else if (language == 'en' && item[0]) {
         textarea.value += " " + item[0].toString();
       }
+
+      // 이전에 선택된 버튼이 있다면 색상을 원래대로 변경합니다.
+      if (selectedButton) {
+        selectedButton.classList.remove('btn-primary');
+      }
+
+      // 현재 선택된 버튼의 색상을 변경합니다.
+      button.classList.add('btn-primary');
+      selectedButton = button;
     });
+
     cardContainer.appendChild(button);
   });
 }
 
+// ... 나머지 코드 ...
+
 
 // 비밀번호 확인 함수
 async function checkPassword() {
-  if(exam){return;}
+  if (exam) { return; }
   let questCode = document.getElementById('request').value;
   const passwordInput = document.getElementById('password').value;
   if (passwordInput.length <= 1) {
@@ -227,21 +277,21 @@ async function checkPassword() {
   }
 }
 
-async function saveData(coments) {
-  let coment = `댓글 : ${document.getElementById('comment').value}`
-  let questCode = coments ? coment : document.getElementById('request').value;
-  const data = {
-    prompt: questCode,
-    sheetId: sheetId
-  };
-  const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?order=saveData`;
-  try {
-    const response = await fetch(URL, { method: 'POST', body: JSON.stringify(data), mode: 'no-cors' });
-    document.getElementById('comment').value = "";
-  } catch (error) {
-    console.error(error);
-  }
-}
+// async function saveData(coments) {
+//   let coment = `댓글 : ${document.getElementById('comment').value}`
+//   let questCode = coments ? coment : document.getElementById('request').value;
+//   const data = {
+//     prompt: questCode,
+//     sheetId: sheetId
+//   };
+//   const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?order=saveData`;
+//   try {
+//     const response = await fetch(URL, { method: 'POST', body: JSON.stringify(data), mode: 'no-cors' });
+//     document.getElementById('comment').value = "";
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 async function getCode() {
   const imageInput = document.getElementById('imageInput');
@@ -251,11 +301,12 @@ async function getCode() {
   formData.append('image', imageInput.files[0]);
   formData.append('userInput', questCode);
   // 기존의 editorContainer 삭제 (중복 방지)
-  if (editorContainer) { editorContainer.remove(); } 
+  if (editorContainer) { editorContainer.remove(); }
   // fetch를 위한 재시도 횟수 설정
   const maxAttempts = 3;
   let attempt = 0;
   let response;
+  console.log(formData)
   while (attempt < maxAttempts) {
     try {
       response = await fetch(Url, {
@@ -437,39 +488,46 @@ function downloadFile(value) {
   a.click();
 }
 
-// document.getElementById('deployBtn').addEventListener('click', function() {
-//   const zip = new JSZip();
-//   // index.html 파일을 포함하는 폴더를 생성합니다.
-//   // 예시로 'website'라는 폴더를 생성하여 파일을 추가합니다.
-//   zip.folder("website").file("index.html", editor.getValue());
 
-//   var netlifyToken = 'nfp_wYwpHMXDZrzE5WRVQHFyvmqAsSjMPEsq2655'; // 주의: 실제 사용시 보안 관련 대책 필요
-//   var apiURL = `https://api.netlify.com/api/v1/sites`;
+//댓글 전송
+const ComentsheetId = '1dCPa8dvEZIoOCyZ2pAhgs4axVbZqmL1eEuk8F5XlsqQ';
 
-//   // JSZip의 generateAsync 메서드를 사용하여 비동기적으로 ZIP 파일 생성
-//   zip.generateAsync({type: 'blob'})
-//     .then(function(content) {
-//       const formData = new FormData();
-//       formData.append('zip', content);
 
-//       // Fetch API를 사용하여 넷틀리파이에 배포 요청
-//       // Content-Type을 'application/zip'으로 설정하는 부분은 제거합니다.
-//       // 이는 Fetch API가 FormData 객체를 사용할 때 자동으로 적절한 Content-Type을 설정하기 때문입니다.
-//       return fetch(apiURL, {
-//         method: 'POST',
-//         headers: {
-//           'Authorization': `Bearer ${netlifyToken}`
-//         },
-//         body: formData
-//       });
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//       const tempURL = data.deploy_url;
-//       document.getElementById('tempURL').textContent = tempURL;
-//     })
-//     .catch(error => {
-//       console.error('Error:', error);
-//       document.getElementById('tempURL').textContent = '배포 중 오류가 발생했습니다.';
-//     });
-// });
+async function saveData(event) {
+  event.preventDefault();
+  const scriptURL = 'AKfycbzNIBs_4ZjRDL3ku6tvFhoSKRynZD3YPfcAIeUxQzZ1eu2dZWt55TwVzqf9yNM-7L-eQw';
+
+  let coment = `IMG : ${document.getElementById('comment').value}`;
+  if (!coment) {
+    return;
+  }
+  const data = {
+    coment: coment,
+    sheetId: ComentsheetId
+  };
+  const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?order=saveData`;
+  try {
+    await fetch(URL, { method: 'POST', body: JSON.stringify(data), mode: 'no-cors' });
+    document.getElementById('name').value = ""; // 댓글 입력 필드 초기화
+    document.getElementById('email').value = ""; // 댓글 입력 필드 초기화
+    document.getElementById('comment').value = ""; // 댓글 입력 필드 초기화
+
+
+    // SweetAlert2를 사용하여 전송 완료 팝업 표시
+    Swal.fire({
+      icon: 'success',
+      title: '메시지 전송 완료',
+      text: '메시지가 성공적으로 전송되었습니다.',
+      confirmButtonText: '확인'
+    });
+  } catch (error) {
+    console.error(error);
+    // 전송 실패 시 에러 팝업 표시
+    Swal.fire({
+      icon: 'error',
+      title: '메시지 전송 실패',
+      text: '메시지 전송 중 오류가 발생했습니다.',
+      confirmButtonText: '확인'
+    });
+  }
+}
