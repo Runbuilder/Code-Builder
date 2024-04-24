@@ -146,8 +146,8 @@ function sheetShow(sheetNames) {
       }
     });
     // const btnContainer = document.querySelector('.data');
-    // const btnContainer = document.querySelector('.data2');
-    // btnContainer.appendChild(button);
+    const btnContainer = document.querySelector('.data2');
+    btnContainer.appendChild(button);
 
     // 첫 번째 메뉴 버튼의 색상을 변경합니다.
     if (index === 0) {
