@@ -188,9 +188,9 @@ function dataShow(dataArray) {
       const textarea = document.getElementById('request');
       let value = editor.getValue();
       console.log(exam, value);
-      if (exam) {
-        textarea.value = "";
-      }
+      // if (exam) {
+      //   textarea.value = "";
+      // }
       if (exam) {
         editor.setValue(item[3].toString());
       }
@@ -221,60 +221,59 @@ function dataShow(dataArray) {
 // 비밀번호 확인 함수
 async function checkPassword() {
   if (exam) { return; }
-  let questCode = document.getElementById('request').value;
-  const passwordInput = document.getElementById('password').value;
-  if (passwordInput.length <= 1) {
-    Swal.fire({
-      title: '경고',
-      text: '비밀번호를 입력해주세요',
-      icon: 'warning',
-      confirmButtonText: '확인'
-    });
-    return;
-  }
-  if (questCode.length <= 1) {
-    Swal.fire({
-      title: '경고',
-      text: '프롬프트 내용을 입력해주세요',
-      icon: 'warning',
-      confirmButtonText: '확인'
-    });
-    return;
-  }
-  // 팝업 창 표시
-  Swal.fire({
-    title: "코드 분석중..",
-    html: "잠시 기다려 주세요...",
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    showConfirmButton: false,
-    didOpen: () => {
-      Swal.showLoading();
-    }
-  });
-  // Google Apps Script 호출 URL 구성
-  const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&pw=${encodeURIComponent(passwordInput)}`;
-  try {
-    const response = await fetch(URL, { mode: 'cors' });
-    const data = await response.json();
-    // 인증 성공 여부 확인
-    if (data.authSuccess) {
-      // 코드 가져오기 함수 호출 또는 인증 성공 시의 로직
-      console.log('인증 성공');
-      getCode(); // 필요한 경우 주석 해제
-      saveData();//프롬프트내용저장
-    } else {
-      // 인증 실패 알림
-      Swal.fire({
-        title: '경고',
-        text: '올바른 비밀번호를 입력해주세요',
-        icon: 'warning',
-        confirmButtonText: '확인'
-      });
-    }
-  } catch (error) {
-    console.error('인증 과정에서 오류가 발생했습니다:', error);
-  }
+  // let questCode = document.getElementById('request').value;
+  // const passwordInput = document.getElementById('password').value;
+  // if (passwordInput.length <= 1) {
+  //   Swal.fire({
+  //     title: '경고',
+  //     text: '비밀번호를 입력해주세요',
+  //     icon: 'warning',
+  //     confirmButtonText: '확인'
+  //   });
+  //   return;
+  // }
+  // if (questCode.length <= 1) {
+  //   Swal.fire({
+  //     title: '경고',
+  //     text: '프롬프트 내용을 입력해주세요',
+  //     icon: 'warning',
+  //     confirmButtonText: '확인'
+  //   });
+  //   return;
+  // }
+  // Swal.fire({
+  //   title: "코드 분석중..",
+  //   html: "잠시 기다려 주세요...",
+  //   allowOutsideClick: false,
+  //   allowEscapeKey: false,
+  //   showConfirmButton: false,
+  //   didOpen: () => {
+  //     Swal.showLoading();
+  //   }
+  // });
+  // // Google Apps Script 호출 URL 구성
+  // const URL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&pw=${encodeURIComponent(passwordInput)}`;
+  // try {
+  //   const response = await fetch(URL, { mode: 'cors' });
+  //   const data = await response.json();
+  //   // 인증 성공 여부 확인
+  //   if (data.authSuccess) {
+  //     // 코드 가져오기 함수 호출 또는 인증 성공 시의 로직
+  //     console.log('인증 성공');
+  //     getCode(); // 필요한 경우 주석 해제
+  //     saveData();//프롬프트내용저장
+  //   } else {
+  //     // 인증 실패 알림
+  //     Swal.fire({
+  //       title: '경고',
+  //       text: '올바른 비밀번호를 입력해주세요',
+  //       icon: 'warning',
+  //       confirmButtonText: '확인'
+  //     });
+  //   }
+  // } catch (error) {
+  //   console.error('인증 과정에서 오류가 발생했습니다:', error);
+  // }
 }
 
 // async function saveData(coments) {
@@ -294,69 +293,69 @@ async function checkPassword() {
 // }
 
 async function getCode() {
-  const imageInput = document.getElementById('imageInput');
-  let questCode = document.getElementById('request').value;
+  // const imageInput = document.getElementById('imageInput');
+  // let questCode = document.getElementById('request').value;
   const Url = `https://port-0-totalserver-9zxht12blq81t0ot.sel4.cloudtype.app/generate/html`;
   const formData = new FormData();
-  formData.append('image', imageInput.files[0]);
-  formData.append('userInput', questCode);
-  // 기존의 editorContainer 삭제 (중복 방지)
-  if (editorContainer) { editorContainer.remove(); }
-  // fetch를 위한 재시도 횟수 설정
-  const maxAttempts = 3;
-  let attempt = 0;
-  let response;
-  console.log(formData)
-  while (attempt < maxAttempts) {
-    try {
-      response = await fetch(Url, {
-        method: 'POST',
-        body: formData
-      });
-      if (!response.ok) throw new Error('Network response was not ok.');
-      // 성공한 경우, 반복문 탈출
-      console.log(`Attempt ${attempt + 1}: Success`);
-      break;
-    } catch (error) {
-      console.error(`Attempt ${attempt + 1} failed:`, error);
-      attempt++;
-      if (attempt < maxAttempts) {
-        console.log(`Retrying... Attempt ${attempt + 1}`);
-      } else {
-        console.log('Max retry attempts reached. Failing...');
-        Swal.fire({
-          title: '에러',
-          text: '분석 중 에러가 발생했습니다!',
-          icon: 'error',
-          confirmButtonText: '닫기'
-        });
-        return; // 최대 시도 횟수에 도달하면 함수 종료
-      }
-    }
-  }
+  // formData.append('image', imageInput.files[0]);
+  // formData.append('userInput', questCode);
+  // // 기존의 editorContainer 삭제 (중복 방지)
+  // if (editorContainer) { editorContainer.remove(); }
+  // // fetch를 위한 재시도 횟수 설정
+  // const maxAttempts = 3;
+  // let attempt = 0;
+  // let response;
+  // console.log(formData)
+  // while (attempt < maxAttempts) {
+  //   try {
+  //     response = await fetch(Url, {
+  //       method: 'POST',
+  //       body: formData
+  //     });
+  //     if (!response.ok) throw new Error('Network response was not ok.');
+  //     // 성공한 경우, 반복문 탈출
+  //     console.log(`Attempt ${attempt + 1}: Success`);
+  //     break;
+  //   } catch (error) {
+  //     console.error(`Attempt ${attempt + 1} failed:`, error);
+  //     attempt++;
+  //     if (attempt < maxAttempts) {
+  //       console.log(`Retrying... Attempt ${attempt + 1}`);
+  //     } else {
+  //       console.log('Max retry attempts reached. Failing...');
+  //       Swal.fire({
+  //         title: '에러',
+  //         text: '분석 중 에러가 발생했습니다!',
+  //         icon: 'error',
+  //         confirmButtonText: '닫기'
+  //       });
+  //       return; // 최대 시도 횟수에 도달하면 함수 종료
+  //     }
+  //   }
+  // }
 
-  try {
-    // fetch 성공 후의 로직
-    const data = await response.json();
-    let code = data.text;
-    responseElement = code.replace(/```html/g, '').replace(/```/g, '');
+  // try {
+  //   // fetch 성공 후의 로직
+  //   const data = await response.json();
+  //   let code = data.text;
+  //   responseElement = code.replace(/```html/g, '').replace(/```/g, '');
 
-    // 팝업 창 닫기
-    Swal.close();
+  //   // 팝업 창 닫기
+  //   Swal.close();
 
-    editor.session.setMode("ace/mode/javascript");
-    editor.setTheme("ace/theme/monokai");
-    editor.setValue(responseElement);
-  } catch (error) {
-    console.error('Error:', error);
-    // 이 catch 블록은 JSON 파싱 또는 그 이후의 로직에서 오류가 발생했을 때 실행됩니다.
-    Swal.fire({
-      title: '에러',
-      text: '분석 중 에러가 발생했습니다!',
-      icon: 'error',
-      confirmButtonText: '닫기'
-    });
-  }
+  //   editor.session.setMode("ace/mode/javascript");
+  //   editor.setTheme("ace/theme/monokai");
+  //   editor.setValue(responseElement);
+  // } catch (error) {
+  //   console.error('Error:', error);
+  //   // 이 catch 블록은 JSON 파싱 또는 그 이후의 로직에서 오류가 발생했을 때 실행됩니다.
+  //   Swal.fire({
+  //     title: '에러',
+  //     text: '분석 중 에러가 발생했습니다!',
+  //     icon: 'error',
+  //     confirmButtonText: '닫기'
+  //   });
+  // }
 }
 
 const htmlCode = document.querySelector('#htmlCode');
