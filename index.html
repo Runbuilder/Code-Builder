@@ -31,8 +31,11 @@
 <body>
   <header style="color:white">
 
-    <h1 style="text-align: center;padding: 30px 0 0 0 ;font-weight: 900;">
+    <!-- <h1 style="text-align: center;padding: 30px 0 0 0 ;font-weight: 900;">
       CODE <img src="robot.png" width="70" alt=""> <span class="txtBox">BUILDER</span>
+      </h2> -->
+    <h1 style="text-align: center;padding: 30px 0 0 0 ;font-weight: 900;">
+      CODE   <span class="txtBox">BUILDER</span>
       </h2>
       <!-- 카테고리 -->
       <div class="data" style="padding: 10px; 0">
@@ -85,14 +88,13 @@
     <div id="cardContainer"> </div>
 
 
-    <textarea id="request" style=" min-height: 150px" placeholder="PROMPT : 코드 생성을 위한 프롬프트 입력"></textarea>
+    <!-- <textarea id="request" style=" min-height: 150px" placeholder="PROMPT : 코드 생성을 위한 프롬프트 입력"></textarea>
     <div style="display: flex;">
       <input class="btn-primary btnCopy" type="file" id="imageInput" accept="image/*"
         onchange="handleFileSelect(event)">
       <input type="password" id="password" style="width: 100px;" placeholder="비밀번호">
-
       <button class="btn-primary btnCopy2" onclick="checkPassword()">✨GET CODE </button>
-    </div>
+    </div> -->
 
   </div>
 
@@ -107,22 +109,19 @@
       <!-- <h2>Contact Us</h2> -->
       <div class="contact-container">
         <div class="contact-info">
-          <img src="https://res.cloudinary.com/djzf2mipa/image/upload/v1707379518/AiClass/robot_oh6ck8.png" width="120"
-            alt="">
-          <p></p>
-          <p>AI 업무자동화 & 컨텐츠개발</p>
-          <p><strong>Email :</strong> openaiteacher@gmail.com</p>
-          <p><strong>Youtube :</strong> <a href="https://www.youtube.com/channel/UCLP2jMz-MpVgsGizdjfQDZA"
-              target="_blank" style="font-weight: 900;">www.youtube.com/@runbuild</a></p>
+          <img src="https://res.cloudinary.com/djzf2mipa/image/upload/v1707379518/AiClass/robot_oh6ck8.png" width="80"
+            alt=""> 
+          <p>AI 업무자동화 & 컨텐츠개발</p> 
+          <button class="btn-primary btnBuild" style="max-width: 200px;"onclick="window.open('https://litt.ly/runbuild', '_blank')">문의하기</button>
         </div>
-        <div class="contact-form">
+        <!-- <div class="contact-form">
           <form method="post" onsubmit="saveData(event)">
             <input type="text" name="name" id="name" placeholder="Your Name" required>
             <input type="email" name="email" id="email" placeholder="Your Email" required>
             <textarea name="message" id="comment" placeholder="Your Message" required></textarea>
             <button type="submit" class="btn-primary">Send Message</button>
           </form>
-        </div>
+        </div> -->
       </div>
     </section>
 
