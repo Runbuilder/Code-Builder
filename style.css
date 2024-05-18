@@ -281,14 +281,6 @@ input {
   cursor: pointer;
 }
 
-.contact-info,
-.contact-form {
-  flex: 0 1 calc(50% - 40px);
-  /* Adjust to display two items per row */
-  margin: 20px;
-}
-
-
 footer {
   background-color: #333;
   color: #fff;
@@ -302,6 +294,16 @@ footer {
 .footer-bottom {
   text-align: center;
   margin-top: 20px;
+}
+
+.contact-info,
+.contact-form {
+  /* flex: 0 1 calc(50% - 40px); */
+  /* Adjust to display two items per row */
+  padding: 0 30px;
+  margin: 20px;
+  width: 100%;
+
 }
 
 @media screen and (max-width: 768px) {
