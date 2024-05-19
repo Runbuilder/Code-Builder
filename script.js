@@ -175,6 +175,9 @@ function dataShow(dataArray) {
     span.style.position = 'relative';
     span.style.zIndex = 2;
     button.appendChild(span);
+    button.style.backgroundImage = `url('${item[2]}')`;
+    button.style.width = '160px';
+    button.style.height = '160px';
     button.classList.add('btn2');
     button.classList.add('btn');
 
