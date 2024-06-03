@@ -39,6 +39,22 @@ header {
   margin: auto;
 }
 
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+.fas,
+.fab {
+  color: white;
+  font-size: 28px;
+  margin : 0 5px;
+  text-decoration: none;
+}
+
 .theme-toggle {
   position: fixed;
   right: 10px;
@@ -205,6 +221,7 @@ input {
 .btnBuild {
   height: 40px;
   padding: 0 10px;
+  margin: 0 1px;
   font-weight: 900;
   font-size: 18px;
   width: 100%;
@@ -303,7 +320,6 @@ footer {
   padding: 0 30px;
   margin: 20px;
   width: 100%;
-
 }
 
 @media screen and (max-width: 768px) {
