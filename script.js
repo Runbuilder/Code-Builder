@@ -79,6 +79,16 @@ async function getRemainingData() {
   }
 }
 
+// 데이터 로드 함수 정의
+async function loadSheetData(name, index) {
+  const sheetURL = `https://script.google.com/macros/s/${encodeURIComponent(scriptURL)}/exec?sn=${encodeURIComponent(sheetId)}&param=${encodeURIComponent(index + 1)}`;
+  const sheetResponse = await fetch(sheetURL, { mode: 'cors' });
+  const sheetData = await sheetResponse.json();
+  allData[name] = sheetData.data;
+
+  dataShow(allData[name]);
+}
+
 getInitialData();
 
 // 시트 이름 데이터를 메뉴 버튼으로 표시하는 함수를 정의합니다.
@@ -106,6 +116,8 @@ function sheetShow(sheetNames) {
       if (!allData[name]) {
         document.getElementById('cardContainer').innerHTML = "";
         document.getElementById('loading').style.display = 'block';
+        // 데이터 로드 함수 호출
+        loadSheetData(name, index);
       } else {
         dataShow(allData[name]);
       }
