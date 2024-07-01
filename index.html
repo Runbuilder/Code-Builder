@@ -1,150 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE BUILDER</title>
-  <!-- 아이콘 추가 -->
-
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
-  <!-- sweetalert2 추가 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <link rel="icon" href="pen.png">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-  <!-- 부트스트랩 CSS 링크 추가 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <title>런빌드</title>
+  <!-- 편집기 추가 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript"
     charset="utf-8"></script>
-  <script src="
-  https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js
-  "></script>
+  <!-- 아이콘 추가 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <!-- Showdown 라이브러리 추가 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+  <!-- SweetAlert2 라이브러리 추가 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="robot.png">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT6XP1VTLY"></script>
-  <!-- 마크다운 표시 라이브러리 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
-
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-HT6XP1VTLY');
-  </script>
-  <style>
-    .custom-content-class {
-      text-align: left !important;
-    }
-  </style>
 </head>
 
 <body>
-  <header style="color:white">
-
-    <!-- <h1 style="text-align: center;padding: 30px 0 0 0 ;font-weight: 900;">
-      CODE <img src="robot.png" width="70" alt=""> <span class="txtBox">BUILDER</span>
-      </h2> -->
-    <h1 style="text-align: center;padding: 30px 0 0 0 ;font-weight: 900;">
-      RUN 🤖 <span class="txtBox">BUILDER</span>
-      </h2>
-      <!-- 카테고리 -->
-      <div class="data" style="padding: 10px; 0">
+  <div class="container">
+    <div class="header">
+      <div style="display: flex;">
+        <img src="robot.png" width="40" alt="">
+        <h1>런빌드</h1>
       </div>
+      <!-- <button class="coloso">클래스</button> -->
+    </div>
 
-      <div class="main">
-        <h2 class="title" style="margin-top: 10px; text-align: center;font-weight:900;"></h2>
-        <!-- <div id="loading" style="display: none; text-align: center;padding: 30px;">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">로딩 중...</span>
+    <div class="editorContainer">
+      <!-- Ace Editor 컨테이너 -->
+      <div id="editor" style="height: 200px;"></div>
+      <!-- 하단 버튼 -->
+      <button class="btnBox" id="runBuild">🚀 코드실행</button>
+    </div>
+
+    <div class="section">
+      <h2 style="margin-bottom: 10px;">😍인기 무료 자료</h2>
+      <p style="margin-top: 0;">무료로 활용하고 다운로드 받을 수 있는 자료 입니다.</p>
+      <div class="cards">
+        <div class="card" id="card1">
+          <img src="app.png" alt="app">
+          <div class="card-content">
+            <p class="card-title">웹앱 코드 자료</p>
+            <p class="card-subtitle">AI로 만든 다양한 웹앱 코드</p>
           </div>
-          <p>로딩 중...</p>
-        </div> -->
-        <!-- <div id="cardContainer"> </div> -->
-      </div>
-  </header>
-
-  <div id="editorContainer" style="text-align: center; margin-top: 10px; padding: 0 15px;">
-    <div style="display: flex;">
-      <!-- Run Build 버튼 -->
-      <button class="btn-primary btnBuild" id="runBuild">🚀 코드실행</button>
-      <!-- PWA 버튼 (필요에 따라 주석 처리 또는 추가) -->
-    </div>
-    <!-- Ace Editor 컨테이너 -->
-    <div id="editor" style="height: 400px;"></div>
-    <div style="display: flex;">
-      <!-- 하단 버튼들 -->
-      <button class="btn-Secondary btnBuild" id="htmlCode">HTML</button>
-      <button class="btn-Secondary btnBuild" id="pwa">PWA</button>
-      <button class="btn-Secondary btnBuild" id="manifest">Manifest</button>
-      <button class="btn-Secondary btnBuild" id="serviceWorkers">Service</button>
-      <!--
-      <button class="btn-Secondary btnBuild" id="deployBtn">deploy</button>
-      -->
-      <button class="btn-Secondary btnBuild" id="save">SAVE</button>
-    </div>
-  </div>
-
-  <!-- 텍스트에리어 -->
-  <div style="text-align:center;padding: 15px;">
-    <div id="loading" style="display: none; text-align: center;padding: 30px;">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">로딩 중...</span>
-      </div>
-      <p>로딩 중...</p>
-    </div>
-
-    <!-- 메뉴버튼 -->
-    <div class="data2" style="padding: 10px 0;margin-top: 20px;"></div>
-    <div id="cardContainer"> </div>
-
-
-    <!-- <textarea id="request" style=" min-height: 150px" placeholder="PROMPT : 코드 생성을 위한 프롬프트 입력"></textarea>
-    <div style="display: flex;">
-      <input class="btn-primary btnCopy" type="file" id="imageInput" accept="image/*"
-        onchange="handleFileSelect(event)">
-      <input type="password" id="password" style="width: 100px;" placeholder="비밀번호">
-      <button class="btn-primary btnCopy2" onclick="checkPassword()">✨GET CODE </button>
-    </div> -->
-
-  </div>
-
-  <main>
-  </main>
-  <div id="tempURL"></div>
-
-  <!-- Contact Section -->
-  <footer style="margin-top:1px;" class="text-gray-800 dark:text-white ">
-
-    <section id="contact">
-      <!-- <h2>Contact Us</h2> -->
-      <div class="contact-container">
-        <div class="contact-info">
-          <img src="https://res.cloudinary.com/djzf2mipa/image/upload/v1707379518/AiClass/robot_oh6ck8.png" width="80"
-            alt="">
-<!--           <button class="btn btn-Secondary my-2" style="max-width: 200px;"
-            onclick="window.open('https://litt.ly/runbuild', '_blank')">Who is</button> -->
-          <!-- <div class="contact-form">
-          <form method="post" onsubmit="saveData(event)">
-            <input type="text" name="name" id="name" placeholder="Your Name" required>
-            <input type="email" name="email" id="email" placeholder="Your Email" required>
-            <textarea name="message" id="comment" placeholder="Your Message" required></textarea>
-            <button type="submit" class="btn-primary">Send Message</button>
-          </form>
-        </div> -->
-          <p></p>
-          <a href="https://www.aiclass.kr/" target="_blank" ><i class="fas fa-globe"></i></a>
-          <a href="https://www.youtube.com/@runbuild" target="_blank"><i class="fab fa-youtube"></i></a>
-          <a href="https://www.facebook.com/runbuild/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://www.instagram.com/run_builder" target="_blank"><i class="fab fa-instagram"></i></a>
-          <a href="https://tilnote.io/@runbuild" target="_blank"><i class="fas fa-blog"></i></a>
         </div>
-    </section>
+        <div class="card" id="card2">
+          <img src="appsctipt.png" alt="script">
+          <div class="card-content">
+            <p class="card-title">업무 자동화 자료</p>
+            <p class="card-subtitle">업무자동화를 위한 구글시트 앱스크립트 자료</p>
+          </div>
+        </div>
+        <div class="card" id="card3">
+          <img src="book.png" alt="책">
+          <div class="card-content">
+            <p class="card-title">강의 자료</p>
+            <p class="card-subtitle">온라인 강의 및 집필서적 자료</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- card1-section -->
+    <div class="card1-section" style="display: none;margin-bottom: 40px;">
+      <div class="header">
+        <h2 style="margin-bottom: 10px;">😍AI앱 예제코드</h2>
+        <button class="coloso backButton">Back</button>
+      </div>
+      <div id="loading-spinner-1" class="loading-spinner" style="display: none;">
+        <div class="loader"></div>
+      </div>
+      <div id="cardContainer-1" class="cards"> </div>
+    </div>
 
-    <!-- Footer -->
-    2023 © Build by🦾 RunBuilder. All rights reserved.
-  </footer>
+    <!-- card2-section -->
+    <div class="card2-section" style="display: none;margin-bottom: 40px;">
+      <div class="header">
+        <h2 style="margin-bottom: 10px;">😍업무자동화 자료</h2>
+        <button class="coloso backButton">Back</button>
+      </div>
+      <div id="loading-spinner-2" class="loading-spinner" style="display: none;">
+        <div class="loader"></div>
+      </div>
+      <div id="cardContainer-2" class="cards"> </div>
+    </div>
+
+    <!-- card3-section -->
+    <div class="card3-section" style="display: none;margin-bottom: 40px;">
+      <div class="header">
+        <h2 style="margin-bottom: 10px;">😍강의 자료</h2>
+        <button class="coloso backButton">Back</button>
+      </div>
+      <div id="loading-spinner-3" class="loading-spinner" style="display: none;">
+        <div class="loader"></div>
+      </div>
+      <div id="cardContainer-3" class="cards"> </div>
+    </div>
+
+    <!-- 강의섹션 -->
+    <div class="section">
+      <h2 style="margin-bottom: 10px;">😎인기 무료 강의</h2>
+      <p style="margin-top: 0;">가장 인기있는 AI를 활용한 앱만들기 강의입니다.</p>
+      <div class="cards">
+        <div class="card" onclick="window.open('https://www.youtube.com/watch?v=_8S5JunQ2Vg', '_blank')">
+          <img src="youtube1.jpg" alt="youtube">
+          <div class="card-content">
+            <p class="card-title">AI코딩 마스터</p>
+            <p class="card-subtitle">업무자동화를 위한 구글시트 앱스크립트 자료</p>
+          </div>
+        </div>
+        <div class="card" onclick="window.open('https://www.youtube.com/watch?v=AjXBUKMcgfo', '_blank')">
+          <img src="youtube2.jpg" alt="youtube">
+          <div class="card-content">
+            <p class="card-title">API활용 앱만들기</p>
+            <p class="card-subtitle">업무자동화를 위한 구글시트 앱스크립트 자료</p>
+          </div>
+        </div>
+        <div class="card" onclick="window.open('https://www.youtube.com/watch?v=OWvJXW4hRNI', '_blank')">
+          <img src="youtube3.jpg" alt="youtube">
+          <div class="card-content">
+            <p class="card-title">수익화앱 전략</p>
+            <p class="card-subtitle">업무자동화를 위한 구글시트 앱스크립트 자료</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>© 런빌드 RunBuild 2024. All Rights Reserved.</p>
+    <p>문의: openaiteacher@gmail.com</p>
+    <div style="margin:10px">
+      <a href="https://www.youtube.com/@runbuild" target="_blank"><i class="fab fa-youtube"></i></a>
+      <a href="https://www.facebook.com/runbuild/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/run_builder" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://tilnote.io/@runbuild" target="_blank"><i class="fas fa-blog"></i></a>
+    </div>
+  </div>
   <script src="script.js">
   </script>
 </body>
