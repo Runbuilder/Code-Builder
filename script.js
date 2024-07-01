@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     useSoftTabs: true
   });
   editor.setValue(responseElement, -1); // 초기 HTML 템플릿 설정
-  fetchFileContent('runCode.js');
+  fetchFileContent('runCode.txt');
   // 각 카드 섹션에 대한 클릭 이벤트 리스너 설정
   document.getElementById('card1').addEventListener('click', () => showCardSection('card1'));
   document.getElementById('card2').addEventListener('click', () => showCardSection('card2'));
