@@ -13,18 +13,8 @@ const scriptURLs = [
   'AKfycbwcORA5QLM0RD8ae8794P4-jJsjssU9DXvVN5qxbduU-kaB_gQ0A9_86UuZG2Vqzydq'
 ]; // Google Apps Script 웹 앱 URL 배열
 let language = 'ko'; // 언어 설정 (한국어)
-let responseElement = `
-  <html lang="ko">
-    <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>제목</title>
-    </head>
-    <body>
-      <h1>너는 무엇을 만들고 싶니?</h1>
-    </body>
-  </html>`; // 초기 HTML 템플릿
+
+let responseElement = '';//편집창에 최초 보여질 코드
 let dataLoaded = [false, false, false]; // 각 섹션의 데이터 로드 상태를 추적하는 배열
 const card1datas = [];
 const card2datas = [];
@@ -69,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     useSoftTabs: true
   });
   editor.setValue(responseElement, -1); // 초기 HTML 템플릿 설정
-
+  fetchFileContent('runCode.js');
   // 각 카드 섹션에 대한 클릭 이벤트 리스너 설정
   document.getElementById('card1').addEventListener('click', () => showCardSection('card1'));
   document.getElementById('card2').addEventListener('click', () => showCardSection('card2'));
@@ -82,7 +72,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 페이지 로드 시 데이터 가져오기
   getDataForSections();
+
+  // 에디터 크기 조절 이벤트 리스너
+  const editorContainer = document.querySelector('.editorContainer');
+  editorContainer.addEventListener('mousedown', initResize, false);
 });
+function initResize(e) {
+  window.addEventListener('mousemove', Resize, false);
+  window.addEventListener('mouseup', stopResize, false);
+}
+
+function Resize(e) {
+  const editorContainer = document.querySelector('.editorContainer');
+  editorContainer.style.height = (e.clientY - editorContainer.offsetTop) + 'px';
+  editor.resize(); // Ace Editor 크기 조정
+}
+
+function stopResize(e) {
+  window.removeEventListener('mousemove', Resize, false);
+  window.removeEventListener('mouseup', stopResize, false);
+}
 
 // 로딩 스피너를 표시하는 함수
 function showLoadingSpinner(section) {
@@ -285,10 +294,118 @@ function runCode(code) {
   newWindow.document.close();
 }
 
+
+// 상태 관리 변수
+let runTF = true; // 코드 실행 가능 여부
+let pwaTF = false; // PWA 모드 활성화 여부
+let pwaVal = ""; // PWA 관련 값 저장
+let exam = true; // 예제 모드 여부
+let buttonsCreated = false; // 버튼 생성 완료 여부
+
+
 // 'Run' 버튼 클릭 이벤트 리스너
 const runBuild = document.querySelector('#runBuild');
 runBuild.addEventListener('click', () => {
   const code = editor.getValue();
   if (code.length === 0) return;
   runCode(code);
+}); 
+
+// Manifest 버튼 이벤트 리스너
+const manifest = document.querySelector('#manifest');
+manifest.addEventListener('click', () => {
+  runTF = false;
+  fetchFileContent('manifest.js');
 });
+
+// Service Workers 버튼 이벤트 리스너
+const serviceWorkers = document.querySelector('#serviceWorkers');
+serviceWorkers.addEventListener('click', () => {
+  runTF = false;
+  fetchFileContent('serviceWorker.js');
+});
+
+// Save 버튼 이벤트 리스너
+const save = document.querySelector('#save');
+save.addEventListener('click', () => { downloadFile(editor.getValue()) });
+
+// PWA 버튼 이벤트 리스너
+const pwa = document.querySelector('#pwa');
+pwa.addEventListener('click', () => {
+  runTF = true;
+  const code1 = editor.getValue();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(code1, "text/html");
+  if (pwaTF) {
+    editor.setValue(pwaVal);
+    return;
+  }
+  const head = doc.head;
+  const body = doc.body;
+
+  // PWA 관련 요소 추가
+  const manifestLink = document.createElement("link");
+  manifestLink.setAttribute("rel", "manifest");
+  manifestLink.setAttribute("href", "/manifest.json");
+  const script = document.createElement("script");
+  script.innerHTML = `
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./serviceWorker.js')
+          .then(registration => {
+            console.log('Service worker registered:', registration);
+          })
+          .catch(error => {
+            console.log('Service worker registration failed:', error);
+          });
+      });
+    }
+  `;
+
+  head.appendChild(manifestLink);
+  body.appendChild(script);
+
+  editor.setValue(doc.documentElement.outerHTML);
+  pwaVal = doc.documentElement.outerHTML;
+  pwaTF = true;
+});
+
+// 파일 다운로드 함수
+function downloadFile(value) {
+  if (value.length < 10) return;
+  let extension, fileName, fileType;
+  if (value.startsWith('{')) {
+    extension = 'json';
+    fileName = 'manifest.json';
+    fileType = 'application/json';
+  } else if (value.startsWith('const')) {
+    extension = 'js';
+    fileName = 'serviceWorkers.js';
+    fileType = 'application/javascript';
+  } else {
+    extension = 'html';
+    fileName = 'index.html';
+    fileType = 'text/html';
+  }
+
+  const blob = new Blob([value], { type: fileType });
+  const a = document.createElement('a');
+  a.download = fileName;
+  a.href = URL.createObjectURL(blob);
+  a.click();
+}
+
+// 파일 내용을 가져오는 비동기 함수
+async function fetchFileContent(file) {
+  try {
+    const response = await fetch(file);
+    if (response.ok) {
+      const fileContent = await response.text();
+      editor.setValue(fileContent);
+    } else {
+      console.error('Failed to fetch file:', file);
+    }
+  } catch (error) {
+    console.error('Error fetching file:', error);
+  }
+}
