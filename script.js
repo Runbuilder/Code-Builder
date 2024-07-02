@@ -82,41 +82,16 @@ function initResize(e) {
   window.addEventListener('mouseup', stopResize, false);
 }
 
-// 편집기 크기를 저장하는 함수
-function saveEditorSize() {
-  const editorContainer = document.querySelector('.editorContainer');
-  localStorage.setItem('editorHeight', editorContainer.style.height);
-}
-
-// 편집기 크기를 복원하는 함수
-function restoreEditorSize() {
-  const editorContainer = document.querySelector('.editorContainer');
-  const savedHeight = localStorage.getItem('editorHeight');
-  if (savedHeight) {
-    editorContainer.style.height = savedHeight;
-    editor.resize();
-  }
-}
-
-// Resize 함수 수정
 function Resize(e) {
   const editorContainer = document.querySelector('.editorContainer');
   editorContainer.style.height = (e.clientY - editorContainer.offsetTop) + 'px';
-  editor.resize();
-  saveEditorSize(); // 크기 변경 후 저장
+  editor.resize(); // Ace Editor 크기 조정
 }
 
-// stopResize 함수 수정
 function stopResize(e) {
   window.removeEventListener('mousemove', Resize, false);
   window.removeEventListener('mouseup', stopResize, false);
-  saveEditorSize(); // 리사이즈 종료 시 크기 저장
 }
-
-// 윈도우 리사이즈 이벤트 처리
-window.addEventListener('resize', function() {
-  restoreEditorSize();
-});
 
 // 로딩 스피너를 표시하는 함수
 function showLoadingSpinner(section) {
