@@ -1,6 +1,7 @@
+<!-- 바닥 색상 갈색으로 변경 -->
 <!DOCTYPE html>
+<!-- 바닥 색상 갈색으로 변경 -->
 <html lang="ko">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
