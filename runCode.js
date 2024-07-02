@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang=""ko"">
+<html lang="ko">
 
 <head>
-  <meta charset=""UTF-8"">
-  <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>강아지 점프 어드벤처 2.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
@@ -120,25 +120,25 @@
 </head>
 
 <body>
-  <div id=""gameContainer"">
-    <canvas id=""gameCanvas"" width=""800"" height=""400""></canvas>
-    <div id=""startScreen"">
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <div id="startScreen">
       <h1>강아지 점프 어드벤처 2.0</h1>
-      <div id=""characterPreview"">
+      <div id="characterPreview">
         <!-- 캐릭터 미리보기를 위한 공간 -->
       </div>
-      <button id=""startButton"">게임 시작</button>
+      <button id="startButton">게임 시작</button>
     </div>
-    <div id=""gameOverScreen"">
+    <div id="gameOverScreen">
       <h1>게임 오버!</h1>
-      <p id=""finalScore""></p>
-      <p id=""finalTime""></p>
-      <button id=""restartButton"">다시 시작</button>
+      <p id="finalScore"></p>
+      <p id="finalTime"></p>
+      <button id="restartButton">다시 시작</button>
     </div>
-    <div id=""score"">점수: 0</div>
-    <div id=""time"">시간: 0초</div>
+    <div id="score">점수: 0</div>
+    <div id="time">시간: 0초</div>
 
-    <div id=""energy""></div>
+    <div id="energy"></div>
   </div>
 
   <script>
@@ -173,47 +173,47 @@
 
     const dogSvg = new Image();
     dogSvg.src = 'data:image/svg+xml,' + encodeURIComponent(`
-            <svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 200 200"">
-                <circle cx=""100"" cy=""100"" r=""70"" fill=""#F4C430""/>
-                <circle cx=""75"" cy=""80"" r=""10"" fill=""#000000""/>
-                <circle cx=""125"" cy=""80"" r=""10"" fill=""#000000""/>
-                <circle cx=""100"" cy=""110"" r=""10"" fill=""#000000""/>
-                <path d=""M 85 125 Q 100 140 115 125"" fill=""none"" stroke=""#000000"" stroke-width=""3""/>
-                <path d=""M 60 40 Q 50 20 70 35"" fill=""#F4C430"" stroke=""#000000"" stroke-width=""3""/>
-                <path d=""M 140 40 Q 150 20 130 35"" fill=""#F4C430"" stroke=""#000000"" stroke-width=""3""/>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="70" fill="#F4C430"/>
+                <circle cx="75" cy="80" r="10" fill="#000000"/>
+                <circle cx="125" cy="80" r="10" fill="#000000"/>
+                <circle cx="100" cy="110" r="10" fill="#000000"/>
+                <path d="M 85 125 Q 100 140 115 125" fill="none" stroke="#000000" stroke-width="3"/>
+                <path d="M 60 40 Q 50 20 70 35" fill="#F4C430" stroke="#000000" stroke-width="3"/>
+                <path d="M 140 40 Q 150 20 130 35" fill="#F4C430" stroke="#000000" stroke-width="3"/>
             </svg>
         `);
 
     const monsterSvgs = [
-      `<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 200 200"">
-                <circle cx=""100"" cy=""100"" r=""80"" fill=""#FF9999""/>
-                <circle cx=""70"" cy=""80"" r=""20"" fill=""white""/>
-                <circle cx=""70"" cy=""80"" r=""10"" fill=""black""/>
-                <circle cx=""130"" cy=""80"" r=""20"" fill=""white""/>
-                <circle cx=""130"" cy=""80"" r=""10"" fill=""black""/>
-                <path d=""M 70 130 Q 100 150 130 130"" fill=""none"" stroke=""black"" stroke-width=""5""/>
-                <path d=""M 70 30 L 50 10 L 90 20 Z"" fill=""#FF6666""/>
-                <path d=""M 130 30 L 150 10 L 110 20 Z"" fill=""#FF6666""/>
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="80" fill="#FF9999"/>
+                <circle cx="70" cy="80" r="20" fill="white"/>
+                <circle cx="70" cy="80" r="10" fill="black"/>
+                <circle cx="130" cy="80" r="20" fill="white"/>
+                <circle cx="130" cy="80" r="10" fill="black"/>
+                <path d="M 70 130 Q 100 150 130 130" fill="none" stroke="black" stroke-width="5"/>
+                <path d="M 70 30 L 50 10 L 90 20 Z" fill="#FF6666"/>
+                <path d="M 130 30 L 150 10 L 110 20 Z" fill="#FF6666"/>
             </svg>`,
-      `<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 200 200"">
-                <rect x=""20"" y=""20"" width=""160"" height=""160"" rx=""20"" fill=""#99FF99""/>
-                <circle cx=""70"" cy=""80"" r=""25"" fill=""white""/>
-                <circle cx=""70"" cy=""80"" r=""15"" fill=""black""/>
-                <circle cx=""130"" cy=""80"" r=""25"" fill=""white""/>
-                <circle cx=""130"" cy=""80"" r=""15"" fill=""black""/>
-                <rect x=""60"" y=""130"" width=""80"" height=""20"" rx=""10"" fill=""#66CC66""/>
-                <line x1=""60"" y1=""20"" x2=""40"" y2=""0"" stroke=""black"" stroke-width=""4""/>
-                <line x1=""140"" y1=""20"" x2=""160"" y2=""0"" stroke=""black"" stroke-width=""4""/>
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <rect x="20" y="20" width="160" height="160" rx="20" fill="#99FF99"/>
+                <circle cx="70" cy="80" r="25" fill="white"/>
+                <circle cx="70" cy="80" r="15" fill="black"/>
+                <circle cx="130" cy="80" r="25" fill="white"/>
+                <circle cx="130" cy="80" r="15" fill="black"/>
+                <rect x="60" y="130" width="80" height="20" rx="10" fill="#66CC66"/>
+                <line x1="60" y1="20" x2="40" y2="0" stroke="black" stroke-width="4"/>
+                <line x1="140" y1="20" x2="160" y2="0" stroke="black" stroke-width="4"/>
             </svg>`,
-      `<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 200 200"">
-                <polygon points=""100,10 180,180 20,180"" fill=""#9999FF""/>
-                <circle cx=""80"" cy=""100"" r=""20"" fill=""white""/>
-                <circle cx=""80"" cy=""100"" r=""10"" fill=""black""/>
-                <circle cx=""120"" cy=""100"" r=""20"" fill=""white""/>
-                <circle cx=""120"" cy=""100"" r=""10"" fill=""black""/>
-                <path d=""M 70 140 Q 100 160 130 140"" fill=""#6666FF""/>
-                <line x1=""40"" y1=""120"" x2=""10"" y2=""100"" stroke=""black"" stroke-width=""4""/>
-                <line x1=""160"" y1=""120"" x2=""190"" y2=""100"" stroke=""black"" stroke-width=""4""/>
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <polygon points="100,10 180,180 20,180" fill="#9999FF"/>
+                <circle cx="80" cy="100" r="20" fill="white"/>
+                <circle cx="80" cy="100" r="10" fill="black"/>
+                <circle cx="120" cy="100" r="20" fill="white"/>
+                <circle cx="120" cy="100" r="10" fill="black"/>
+                <path d="M 70 140 Q 100 160 130 140" fill="#6666FF"/>
+                <line x1="40" y1="120" x2="10" y2="100" stroke="black" stroke-width="4"/>
+                <line x1="160" y1="120" x2="190" y2="100" stroke="black" stroke-width="4"/>
             </svg>`
     ];
 
@@ -225,13 +225,13 @@
 
     const backgroundImage = new Image();
     backgroundImage.src = 'data:image/svg+xml,' + encodeURIComponent(`
-        <svg xmlns=""http://www.w3.org/2000/svg"" width=""800"" height=""400"" viewBox=""0 0 800 400"">
-            <rect width=""100%"" height=""100%"" fill=""#87CEEB""/>
-            <circle cx=""100"" cy=""80"" r=""40"" fill=""#FFFFFF"" opacity=""0.8""/>
-            <circle cx=""300"" cy=""60"" r=""30"" fill=""#FFFFFF"" opacity=""0.6""/>
-            <circle cx=""500"" cy=""100"" r=""50"" fill=""#FFFFFF"" opacity=""0.7""/>
-            <circle cx=""700"" cy=""70"" r=""35"" fill=""#FFFFFF"" opacity=""0.75""/>
-            <rect x=""0"" y=""300"" width=""800"" height=""100"" fill=""#8B4513""/> <!-- 바닥 색상 갈색으로 변경 -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+            <rect width="100%" height="100%" fill="#87CEEB"/>
+            <circle cx="100" cy="80" r="40" fill="#FFFFFF" opacity="0.8"/>
+            <circle cx="300" cy="60" r="30" fill="#FFFFFF" opacity="0.6"/>
+            <circle cx="500" cy="100" r="50" fill="#FFFFFF" opacity="0.7"/>
+            <circle cx="700" cy="70" r="35" fill="#FFFFFF" opacity="0.75"/>
+            <rect x="0" y="300" width="800" height="100" fill="#8B4513"/> <!-- 바닥 색상 갈색으로 변경 -->
         </svg>
     `);
 
