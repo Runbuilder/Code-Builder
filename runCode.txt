@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+"<!DOCTYPE html>
 <html lang=""ko"">
 
 <head>
   <meta charset=""UTF-8"">
   <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-  <title>강아지 점프 어드벤처</title>
+  <title>강아지 점프 어드벤처 2.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
@@ -333,7 +333,7 @@
             break;
           }
       }
-
+ 
       // 배경 이동
       backgroundX -= gameSpeed / 2;
       if (backgroundX <= -800) {
@@ -432,7 +432,7 @@
       startGameLoop();
     });
 
-
+    
     // 캐릭터 미리보기를 위한 새로운 코드
     function createCharacterPreview() {
       const characterPreview = document.getElementById('characterPreview');
@@ -454,9 +454,9 @@
 
     // 페이지 로드 시 캐릭터 미리보기 생성
     window.addEventListener('load', createCharacterPreview);
-
+    
     init();
   </script>
 </body>
 
-</html>
+</html>"
