@@ -84,7 +84,7 @@ function initResize(e) {
 
 function Resize(e) {
   const editorContainer = document.querySelector('.editorContainer');
-  editorContainer.style.height = (e.clientY - editorContainer.offsetTop) + 'px';
+  // editorContainer.style.height = (e.clientY - editorContainer.offsetTop) + 'px';
   editor.resize(); // Ace Editor 크기 조정
 }
 
